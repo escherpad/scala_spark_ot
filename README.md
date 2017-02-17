@@ -1,5 +1,4 @@
-# scala_spark_ot
-a operational transform demo written in scala on spark
+# Operational Transform Design Doc
 
 Cursor handling is separate from the operational transforms. Only a single patch can be "in-flight"
 between each client and the server. Each operation is not invertable--meaning that a delete operation
