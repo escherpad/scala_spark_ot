@@ -99,9 +99,7 @@ let _object, undos = apply(object, edits:<edit>[])
 
 ### Move
 
-or alternatively\
-
-[index, {d:length, m: new index}]
+or alternatively `[index, {d:length, m: new index}]`
 
 this way, edits that follows would be able to maintain the reference to 
 the text when a very large piece of text is moved that is being actively
