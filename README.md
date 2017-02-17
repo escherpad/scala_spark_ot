@@ -42,10 +42,11 @@ generates an collection of `undos`.
             {"$me": [0, "Hi ", 2, {d: 1}, 2, "! "]}
         ];
     ```
-**Server-client communcation management**
-
-You don't want to keep all of the synced edits forever. Therefore edits are cleared as soon
+> **Server-client communcation management**
+>
+> You don't want to keep all of the synced edits forever. Therefore edits are cleared as soon
 as they are confirmed by the server.
+
 5. At some point, the upload process 
 decides to send the current edit stack to the server. At this time, the upload process
     - inserts a new edit stack to the editStack hence closes the edits being sent over
@@ -84,16 +85,16 @@ let _object, undos = apply(object, edits:<edit>[])
 
 ## Collaborative String
 
-Insert
+**Insert**
 : `[index, insertValue]`
 
-Delete
+**Delete**
 : `[index, {d: length}]`
 
-Replace
+**Replace**
 : `[index, {d: length}, index, insertValue]`
 
-Move
+**Move**
 : or alternatively\
     [index, {d:length, m: new index}]
     this way, edits that follows would be able to maintain the reference to 
