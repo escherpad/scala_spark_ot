@@ -20,6 +20,7 @@ be done for either indivudual user or the entire collaborative edit stack.
 ## Usage
 
 The client side usage of the OT class follows this pattern:
+
 1. editor generates an updated new version of the `{source, selection, update}` pair.
 2. the update object is sent to the `store$`, an `OT reducer` applys the update, and 
 generates an collection of `undos`. 
@@ -85,33 +86,41 @@ let _object, undos = apply(object, edits:<edit>[])
 
 ## Collaborative String
 
-**Insert**
-: `[index, insertValue]`
+### Insert
 
-**Delete**
-: `[index, {d: length}]`
+`[index, insertValue]`
 
-**Replace**
-: `[index, {d: length}, index, insertValue]`
+### Delete
 
-**Move**
-: or alternatively\
-    [index, {d:length, m: new index}]
-    this way, edits that follows would be able to maintain the reference to 
-    the text when a very large piece of text is moved that is being actively
-    by another client.
+`[index, {d: length}]`
 
-Examples
-: simple insertion and deletion
-    ```javascript
-    [0, "Hey! ", 4, {d:1}] // => "" -> "Hey!"
-    ```
+### Replace
+
+`[index, {d: length}, index, insertValue]`
+
+### Move
+
+or alternatively\
+
+[index, {d:length, m: new index}]
+
+this way, edits that follows would be able to maintain the reference to 
+the text when a very large piece of text is moved that is being actively
+by another client.
+
+### Examples
+
+simple insertion and deletion
+
+```javascript
+[0, "Hey! ", 4, {d:1}] // => "" -> "Hey!"
+```
 
 
 
 ### Operation Transforms
         
-insert over insert
+#### insert over insert
         : ```javascript
             [op1.ind <= op0.ind ? 
                 op1.ind :
@@ -119,97 +128,106 @@ insert over insert
             op1.value]
             ```
         
-insert over delete
-        : strategy
-            : maintain the insert operations that follow a delete even when the
-            insertion happened inside the deleted segment.
+#### insert over delete
+
+##### strategy
+
+maintain the insert operations that follow a delete even when the
+insertion happened inside the deleted segment.
+
+```javascript
+[op1.ind < op0.ind ?
+    op1.ind :
+    Math.max(op1.ind - op0.length, op0.ind)
+    // or: 
+    op1.ind < op0.ind + op0.length ?
+        op0.ind :
+        op1.ind - op0.length, 
+op1.value]
+```
         
-        ```javascript
-            [op1.ind < op0.ind ?
-                op1.ind :
-                Math.max(op1.ind - op0.length, op0.ind)
-                // or: 
-                op1.ind < op0.ind + op0.length ?
-                    op0.ind :
-                    op1.ind - op0.length, 
-            op1.value]
-            ```
+#### delete over insert
+
+```javascript
+[op1.ind + op1.length < op0.ind ?
+    op1.ind :
+    Math.max(op1.ind - op0.length, op0.ind)
+    // or: 
+    op1.ind < op0.ind + op0.length ?
+        op0.ind :
+        op1.ind - op0.length, 
+op1.value]
+```
         
-delete over insert
-        : ```javascript
-            [op1.ind + op1.length < op0.ind ?
-                op1.ind :
-                Math.max(op1.ind - op0.length, op0.ind)
-                // or: 
-                op1.ind < op0.ind + op0.length ?
-                    op0.ind :
-                    op1.ind - op0.length, 
-            op1.value]
-            ```
-        
-delete over delete
-        : ```javascript
-            [op1.ind < op0.ind ? 
-                op1.ind :
-                Math.max(op1.ind - op0.length, op0.ind),
-            op1.length]
-            ```
-            
-        cursor handling
-        : if `delete` needs to be transformed to after `delete`
+#### delete over delete
+
+```javascript
+[op1.ind < op0.ind ? 
+    op1.ind :
+    Math.max(op1.ind - op0.length, op0.ind),
+op1.length]
+```
+    
+##### cursor handling
+
+if `delete` needs to be transformed to after `delete`
 
 
 ## OT Type: `array`
 
-Insert
-: `[index, insertValue]`
+### Insert
+`[index, insertValue]`
 
-Delete
-: `[index, {d: length}]`
+### Delete
+`[index, {d: length}]`
 
-Move
-: `[index, {m: new index}]`
+### Move
+`[index, {m: new index}]`
 
-Replace
-: `[index, {d: length}, index, insertValue]`
+### Replace
+`[index, {d: length}, index, insertValue]`
 
-example
-: simple insertion and deletion
-    ```javascript
-    [
-        0, {i}, 
-        "source", [
-    ```
-: object insertion and deletion
-    ```javascript
-    [
-        0, [0, "Hey! ", 3, {d:1}], 
-        "source", [
-    ```
+### example
+simple insertion and deletion
+
+```javascript
+[
+    0, {i}, 
+    "source", [
+```
+
+object insertion and deletion
+
+```javascript
+[
+    0, [0, "Hey! ", 3, {d:1}], 
+    "source", [
+```
 
 ## OT Type: `object`
 
-Insert
-: `[<path>[], {i: insertValue}]`
+### Insert
+`[<path>[], {i: insertValue}]`
 
-Delete
-: `[<path>[], {d: length}]`
+### Delete
+`[<path>[], {d: length}]`
 
-Move
-: `[<path>[], {m: new index}]`
+### Move
+`[<path>[], {m: new index}]`
 
-Replace
-: `[<path>[], {d: length, i: insertValue}]`
+### Replace
+`[<path>[], {d: length, i: insertValue}]`
 
-Edit
-: `[<path>[], [<child_path|index|key>[], "insertion_string", ... ], ... ]`
+### Edit
+`[<path>[], [<child_path|index|key>[], "insertion_string", ... ], ... ]`
 
-example
-: ```javascript
-    [
-        ["source","0123"], [0, "Hey! ", 3, {d:1}], 
-        "source", [
-    ```
+### example
+```javascript
+[
+    ["source","0123"], [0, "Hey! ", 3, {d:1}], 
+    "source", [
+```
+
 with arrays, in each operation the array_index is handled by the operational 
 transform. In objects, there is no implicit ordering of the keys and the key
 generation is handled by the client. As a result, there is always a risk for 
@@ -256,21 +274,22 @@ On the client: each object has
 - undo stack
 - these stacks could be saved in a generator outside of the document object itself.
 
-Typical work flow:
-: action: 
-    ```
-        { type: "UPDATE_POST", id: <post_id>, edits: [20, " muhaha", 20, {d: 3}] }
-    ```
-: object update edit stack:
-    ```
-        { 
-            type: "UPDATE_POST", 
-            id: <post_id>, 
-            edits: [{
-                p: <key> or [key0, key1...],
-                na, li, ld, lm, oi, od, oc, si, sd, sc, 
-                    or [na, ns, li, ld, lm, lc, ...]
-            }]
-        }
-    ```
-: server saving 
+### Typical work flow:
+
+#### action: 
+```
+    { type: "UPDATE_POST", id: <post_id>, edits: [20, " muhaha", 20, {d: 3}] }
+```
+#### object update edit stack:
+```
+    { 
+        type: "UPDATE_POST", 
+        id: <post_id>, 
+        edits: [{
+            p: <key> or [key0, key1...],
+            na, li, ld, lm, oi, od, oc, si, sd, sc, 
+                or [na, ns, li, ld, lm, lc, ...]
+        }]
+    }
+```
+#### server saving 
