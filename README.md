@@ -24,24 +24,24 @@ The client side usage of the OT class follows this pattern:
 2. the update object is sent to the `store$`, an `OT reducer` applys the update, and 
 generates an collection of `undos`. 
 3. The update gets put into a update stack `edits` (in a generator)
-    ```javascript
-        const updates = [
-            {
-                type: "UPDATE_POST",
-                agent: "$me",
-                time: 1484535194324,
-                id: "post_id_string",
-                source: {$e: [0, "Hi! "]},
-                selection: {$s: [0, 1]}
-            }
-        ]
-    ```
+```javascript
+    const updates = [
+        {
+            type: "UPDATE_POST",
+            agent: "$me",
+            time: 1484535194324,
+            id: "post_id_string",
+            source: {$e: [0, "Hi! "]},
+            selection: {$s: [0, 1]}
+        }
+    ]
+```
 4. the undo gets put into a local undo stack `undos`.
-    ```javascript
-        const undos = [
-            {"$me": [0, "Hi ", 2, {d: 1}, 2, "! "]}
-        ];
-    ```
+```javascript
+    const undos = [
+        {"$me": [0, "Hi ", 2, {d: 1}, 2, "! "]}
+    ];
+```
 > **Server-client communcation management**
 >
 > You don't want to keep all of the synced edits forever. Therefore edits are cleared as soon
@@ -120,12 +120,12 @@ simple insertion and deletion
 ### Operation Transforms
         
 #### insert over insert
-        : ```javascript
-            [op1.ind <= op0.ind ? 
-                op1.ind :
-                op1.ind + op0.value.length, 
-            op1.value]
-            ```
+```javascript
+[op1.ind <= op0.ind ? 
+    op1.ind :
+    op1.ind + op0.value.length, 
+op1.value]
+```
         
 #### insert over delete
 
