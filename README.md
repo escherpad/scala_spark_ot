@@ -1,11 +1,5 @@
 # Operational Transform Design Doc
 
-Cursor handling is separate from the operational transforms. Only a single patch can be "in-flight"
-between each client and the server. Each operation is not invertable--meaning that a delete operation
-does not need to contain the string that it removes. The client maintains a stack of "undo" operations
-which it uses to undo edits. Server side undo is done via a similarly maintained undo list. Undo can
-be done for either indivudual user or the entire collaborative edit stack.
-
 ### Todo
 - [ ] conflict resolution on object insertion with both key and order index
 - [ ] client usage, client sync loop are not finished
@@ -15,6 +9,14 @@ be done for either indivudual user or the entire collaborative edit stack.
 #### Finished items
 - [x] string edit/diff is finished
 - [x] selection handling is finished
+
+## Overall Client-Server-Client Synchronization Flow and Network Considerations
+
+Cursor handling is separate from the operational transforms. Only a single patch can be "in-flight"
+between each client and the server. Each operation is not invertable--meaning that a delete operation
+does not need to contain the string that it removes. The client maintains a stack of "undo" operations
+which it uses to undo edits. Server side undo is done via a similarly maintained undo list. Undo can
+be done for either indivudual user or the entire collaborative edit stack.
 
 ## Usage
 
