@@ -1,26 +1,24 @@
 # What is the goal of Escherpad?
 
-I want to create a note taking app that can save notes to my dropbox, and 
-directly edit `README`'s on GitHub, search for my gists etc. I want to be
-able to search for all of my notes here.
+The mission of Escherpad is to create a note taking app that can save all
+notes to your dropbox, and directly edit `README` and `gists` on GitHub.
+It is meant to be a central entrance for all of your notes, making is easy to
+search across backend services.
 
-The report file formats I use include `R-markdown`, `LaTeX`, `jupyter notebook` 
-and Emacs `Org mode`. We also use CSV's and spreadsheets in general. For 
-biologists, we provide `plasmid` viewer, support for chemical diagrams and so
-on. We add viewers without bloating the app. We load viewers inside iframes,
-and communicate with them through frame messaging API.
+The file formats I frequently use include `R-markdown`, `LaTeX`, `jupyter 
+notebook` and Emacs `Org mode`. We also use CSV's and spreadsheets. For 
+biologists, they need viewers for genome sequence data, support for chemical 
+diagrams and so on.
 
-I want you to use Escherpad as the **only** note taking app you ever need to 
-fire up, where you can search for **any** note you have taken.
+Escherpad wants to make it easy for professionals to search for personal note 
+on work computer without the need to install anything locally,
 
-I want professionals to use this for both work **and** personal stuff on work
-computer without the need to install anything locally on work computer
+For startups, Escherpad wants to replace unweldy issue trackers and trello with
+with a clean list view and a search bar. Same applies to classrooms and QA 
+sites.
 
-For small startups, I want to replace unweldy issue trackers and trello with
-Escherpad. For classroom I want to replace Q and A sites.
-
-I want to have people's documents, and build AI that can help them automate
-manual work.
+When Escherpad is used by everyone, maybe we can start building AI assistants
+which can automate otherwise manual tasks.
 
 ## How are we going to do all of these?
 
