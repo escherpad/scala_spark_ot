@@ -13,7 +13,7 @@ diagrams and so on.
 Escherpad wants to make it easy for professionals to search for personal note 
 on work computer without the need to install anything locally,
 
-For startups, Escherpad wants to replace unweldy issue trackers and trello with
+For startups, Escherpad wants to replace unwieldy issue trackers and trello with
 a clean list view and a search bar. Same applies to classrooms and QA 
 sites.
 
