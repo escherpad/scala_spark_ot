@@ -2,7 +2,7 @@
 
 The mission of Escherpad is to create a note taking app that can save all
 notes to your dropbox, and directly edit `README` and `gists` on GitHub.
-It is meant to be a central entrance for all of your notes, making is easy to
+It is meant to be a central entrance for all of your notes, making it easy to
 search across backend services.
 
 The file formats I frequently use include `R-markdown`, `LaTeX`, `jupyter 
@@ -14,7 +14,7 @@ Escherpad wants to make it easy for professionals to search for personal note
 on work computer without the need to install anything locally,
 
 For startups, Escherpad wants to replace unweldy issue trackers and trello with
-with a clean list view and a search bar. Same applies to classrooms and QA 
+a clean list view and a search bar. Same applies to classrooms and QA 
 sites.
 
 When Escherpad is used by everyone, maybe we can start building AI assistants
