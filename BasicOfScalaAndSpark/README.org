@@ -28,4 +28,12 @@
 *** Machine Learning (Spark)
     We will usually encounter a large scale of the data when dealing with the machine learning problems. And most of the time we implement a machine learning technique on top of the big data, we will perform many iterations. The naive method of the Map Reduce to deal with this problems is quite inefficiency. In fact, when we need to iterate something, it makes tons of sense to cache some of the results that we may need to use in the future iterations. Thus, the spark systems come out, it will ask user to give some hint about what needs to be cached and it will make it best effort to cache the data user indicates and generate the map reduce plan.
 * Tutorial
+  #+BEGIN_SRC scala
+    var a : Int = 1
+    a
+  #+END_SRC
+
+  #+results:
+  : 1
+
 * Project description

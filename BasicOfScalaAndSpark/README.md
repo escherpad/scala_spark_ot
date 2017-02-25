@@ -121,4 +121,7 @@ We will usually encounter a large scale of the data when dealing with the machin
 
 # Tutorial<a id="orgheadline2"></a>
 
+    var a : Int = 1
+    a
+
 # Project description<a id="orgheadline3"></a>
