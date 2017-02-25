@@ -1,1 +1,12 @@
-* Environment Setting
+* Introduction
+  In order to start our spark and scala back end project. Some basic understand of spark is necessary. Hence, The first park of this repo will be my understanding about the spark system. And the second part of this repo will be an tutorial I made for the scala and spark. Then, From the third part on will be the true beginning of our back end project.
+  -----
+  | Section | Name                | Content                                          |
+  |---------+---------------------+--------------------------------------------------|
+  |       1 | [[What is spark]]       | Basic description of the spark system            |
+  |       2 | [[Tutorial]]            | An runnable spark tutorial (Scala)               |
+  |       3 | [[Project description]] | Describe the project structure and API in detail |
+  #+TBLFM: $1=@#-1
+* What is spark
+* Tutorial
+* Project description
