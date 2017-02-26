@@ -41,13 +41,12 @@
     #+END_SRC
 
     #+results:
-
 * Project description
 ** Goals
 *** Find some way to iterate our products
     - have everyone on the team use the product
     - build a minimal product 
       - viable :: Get product used everyday, everyone. Find bug and needs.
-   
+** 
    
    
