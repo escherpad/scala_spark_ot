@@ -29,13 +29,6 @@ export default function Selector(selector, Component) {
       this.subscription.unsubscribe()
     }
 
-    shouldComponentUpdate(newProps, newStates) {
-      // note: both store and dispatch are required.
-      // note2: state update *always* trigger re-render
-      if (Object.keys(newProps).length > 2) return true;
-      return false;
-    }
-
     render() {
       if (!this.state) return <div></div>;
       let props = {...this.state, ...this.props};

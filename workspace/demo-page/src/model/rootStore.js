@@ -1,15 +1,11 @@
-import {Store} from "luna";
+import {Store, combineReducers} from "luna";
+import {source} from "./source"
+import {selection} from "./selection"
 
-const DEFAULT_STATE = {
-  source: "Marry has a little lamb.\n",
-  selection: {
-    anchor: 3,
-    head: 3
-  }
-};
-function rootReducer(state = DEFAULT_STATE, action) {
-  return state;
-}
+const rootReducer = combineReducers({
+  source,
+  selection
+});
 
 const store$ = new Store(rootReducer);
 export default store$;
