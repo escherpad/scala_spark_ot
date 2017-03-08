@@ -21,7 +21,9 @@ I am not familiar with the front-end techniques, However, The react project stru
 2. ES2015 Classes
 
 ## Build the App
-### Add the js file
+### Function 
+Function is really convenient if we just want to display something.
+#### Add the js file
 ```javascript
 /* Import the React library from the installed 'react' NPM module*/
 import React from 'react';
@@ -39,7 +41,7 @@ const App = () => {
    display on the screen :) )*/
 export default App;
 ```
-### Add the style sheet (css)
+#### Add the style sheet (css)
 ```css
 /* add the css for the App component */
 .App {
@@ -49,6 +51,28 @@ export default App;
     color: #333;
     margin: 20px;
     padding: 20px;
+}
+```
+
+### Class
+If we want to maintain a state and introduce some interaction, we need class.
+#### Add the js file
+Import the base object from the react NPM module.
+
+```javascript
+// support the class
+import React, { Component } from 'react';
+```
+
+Modify the hello world app to use class. There is some base class in the react called Component.
+```javascript
+// use the class
+class HelloWorld extends Component {
+    render() {
+        return (
+                <div className="HelloWorld"> Hello {this.props.name}!</div>
+        );
+    };
 }
 ```
 

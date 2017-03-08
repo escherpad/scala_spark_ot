@@ -8,9 +8,9 @@ const App = () => {
     return (
         <div className="App">
             {/* use hello world app */}
-            <HelloWorld name="foo"/>
+            <HelloWorld name="foo" />
             {/* build the second hello world app */}
-            <HelloWorld name="bar"/>
+            <HelloWorld name="bar" />
         </div>
     );
 };
