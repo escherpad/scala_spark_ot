@@ -5,7 +5,7 @@ export function del(i, l) {
   return s.splice(i, l)
 }
 
-export function mov(i, l, d) {
+export function mov(s, i, l, d) {
   const seg = s.slice(i, l);
   return s.splice(i, l).splice(d, 0, seg);
 }
