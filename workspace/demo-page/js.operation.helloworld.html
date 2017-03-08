@@ -9,27 +9,34 @@
 <div>
   <div>
     <h1>Operation DEMO</h1>
-    <p>
-      In this DEMO, we'll demonstrate basic Insert and Delete operations.
-      <br>
-      Changes will be displayed on the "Original String" below
-    </p>
-
+    <ul>
+      <li>In this DEMO, we'll demonstrate basic Insert and Delete operations.</li>
+      <li>For now, it's manipulating DOM element;</li>
+      <li>TODO: manipulate data (string) rather than DOM</li>
+      <li>Changes will be displayed on the "Original String" below</li>
+    </ul>
     <br>
-    <br>
-
-    <h2 id="trial">
+    <div id="trial">
+      <h2>
       <p id="playground">
         <span>Original</span>
         <span>String</span>
       </p>
-    </h2>
+      </h2>
+    </div>
 
   </div>
 
   <br>
-
   <div>
+    <h2>Apply Local Changes (Apply locally then send to Server for transform)</h2>
+    <ul>
+      <li>At the end of each function, a change is sent to the server</li>
+      <li>function --> generateJSON --> sendToServer</li>
+      <li>Todo: 2 functions: generateJSON(), sendToServer()</li>
+    </ul>
+  <div>
+
     <h3>Insert</h3>
     <ul>
       <li>
@@ -47,9 +54,6 @@
     </ul>
   </div>
 
-  <br>
-  <br>
-
   <div>
     <h3>Delete</h3>
     <ul>
@@ -61,9 +65,58 @@
       </li>
     </ul>
   </div>
+  </div>
+
+  <br>
+  <br>
+
+  <div>
+    <h2>Apply Remote Changes (After Transform) </h2>
+    <ul>
+      <li>Receive and Parse JSON.</li>
+      <li>Insert: str "position,value"; Received and Parsed by function: applyInsert(change){}</li>
+      <li>Delete: str "d:position"; Received and Parsed by function: applyDelete(change){}</li>
+    </ul>
+    <div>
+
+      <h3>Insert</h3>
+      This will generate a change. The change will be parsed by functions
+      <ul>
+        <li>
+          Insert <input id="insertValue2" size="20" value="Hello"> at <input id="insertPosition2" size="1" value="0"> position
+          <button onclick="applyInsert(document.getElementById('insertPosition2').value+','+document.getElementById('insertValue2').value)">
+            Try It!
+          </button>
+        </li>
+      </ul>
+    </div>
+
+    <div>
+      <h3>Delete</h3>
+      <ul>
+        <li>
+          Delete the word at <input id="deletePosition2" size="1" value="0">
+          <button onclick="applyDelete('d:'+document.getElementById('deletePosition2').value)">
+            Try It!
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
 
 </div>
 <script type="text/javascript">
+  function generateJSON(change){
+    // todo: generate JSON and send to Server
+    changeInJSON = "a json file";
+    sendToServer(changeInJSON);
+  }
+
+  function sendToServer(changeInJSON) {
+    // todo: send to server
+
+  }
+
   function insertZero() {
 
     var target = $('#playground').children();
@@ -91,6 +144,9 @@
     // var target = document.getElementById("trial");
     // target.insertAdjacentHTML("beforeBegin","Hello");
     // target.insertAdjacentHTML("beforeBegin","Hello ");
+
+    // format of change is {position,operation}
+    generateJSON(0+", Hello");
   }
 
   function insertSomewhere(position) {
@@ -101,6 +157,8 @@
     }
 
     $("<span>Hello</span>").insertBefore(target[position]);
+
+    generateJSON(position+", Hello");
   }
 
   function deleteSomewhere(position) {
@@ -116,12 +174,38 @@
       alert("Invalid Input");
       return;
     }
-
+    var len = target[position].length;
     target[position].remove();
     // document.getElementById("playground").removeChild(target.childNodes[0]);
 
+    generateJSON(position+"{d:"+len+ "}");
   }
 
+  function applyInsert(change){
+    var stringArray = change.split(",");
+    var position = stringArray[0];
+    var value = stringArray[1];
+    var target = $('#playground').children();
+    if (position == null || position > target.length || position < 0) {
+      alert("Invalid Input");
+      return;
+    }
+    $('<span>'+value+'</span>').insertBefore(target[position]);
+  }
+
+  function applyDelete(change){
+    var stringArray = change.split(":");
+    var position = stringArray[1];
+    var target = $('#playground').children();
+
+    if (position == null || position > target.length || position < 0) {
+      alert("Invalid Input");
+      return;
+    }
+    var len = target[position].length;
+    target[position].remove();
+
+  }
 </script>
 <script src="index.bundle.js" type="text/javascript"></script>
 </body>
