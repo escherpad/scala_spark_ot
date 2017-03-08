@@ -1,3 +1,5 @@
+// todo: add hierarchical op handling logic? here or in reducer?
+
 export function ins(o, k, v) {
     /** insert value v into object o, @key k.*/
     return {...o, k: v};
