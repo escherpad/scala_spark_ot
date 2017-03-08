@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, {Component} from 'react';
+import rootStore$ from "./model/rootStore";
+import DemoComponent from "./DemoComponent";
 
-class App extends Component {
+import './App.css';
+export default class App extends Component {
   render() {
     return (
       <div className="App">
-        <h1>Here is your title</h1>
-        <h3>test this, and it works.</h3>
+        <DemoComponent store={rootStore$} dispatch={rootStore$.dispatch.bind(rootStore$)}/>
       </div>
     );
   }
 }
 
-export default App;
