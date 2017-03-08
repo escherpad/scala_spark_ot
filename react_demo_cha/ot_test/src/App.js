@@ -1,15 +1,19 @@
-/* Import the React library from the installed 'react' NPM module*/
+/* Import the react first*/
 import React from 'react';
 
-/* fetch the style sheet*/
-import './App.css'
+/* import the hello world app module*/
+import HelloWorld from './HelloWorld';
 
-/* App function starts here*/
 const App = () => {
-    return (<div className="App">Hello World!</div>)
-}
+    return (
+        <div className="App">
+            {/* use hello world app */}
+            <HelloWorld name="foo"/>
+            {/* build the second hello world app */}
+            <HelloWorld name="bar"/>
+        </div>
+    );
+};
 
-/* In order to give other files a chance to take advantage of code
-   written in this file, we need to export. (Otherwise, nothing will
-   display on the screen :) )*/
+/* export for other file to use our code*/
 export default App;
