@@ -1,2 +1,12 @@
+# production
 **/*.bundle.js
-**/npm-debug.log*
+
+# dependencies
+/node_modules
+
+# misc
+.DS_Store
+.env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
