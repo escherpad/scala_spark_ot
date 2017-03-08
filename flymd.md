@@ -27,15 +27,15 @@ pip install awscli
 Download the <access key>.csv file. And you can find the aws\_access\_key\_id and the aws\_secret\_access\_key in it.
 1. Goto the IAM console, And select the user tab.
 
-![Select User Tab](./spark_tutorial/chooseUserTab.png)
+![Select User Tab](./img/chooseUserTab.png)
 
 2. Select your use name, goto your page. Then select security credentials tab.
 
-![Select Security Credentials](./spark_tutorial/chooseSecurityCredentials.png)
+![Select Security Credentials](./img/chooseSecurityCredentials.png)
 
 3. Generate your access key.
 
-![Generate Access key](./spark_tutorial/createAccessKey.png)
+![Generate Access key](./img/createAccessKey.png)
 
 ### Configure your aws cli
 #### Configure with command line
@@ -93,7 +93,7 @@ aws emr create-cluster --applications Name=Ganglia Name=Spark Name=Zeppelin --ec
 
 # Part III: BUG and Solution
 ## Invalid\_Default\_Role
-![Invalid Default Role](spark_tutorial/invalidRole.png)
+![Invalid Default Role](img/invalidRole.png)
 ### Cause
 Instance profile is not exist.
  
