@@ -83,7 +83,7 @@ content of box this works
   con | to render, need to parse as python first.
 
 Here is an example:
-```
+```python
 import numpy
 
 """
