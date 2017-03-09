@@ -20,14 +20,14 @@ That's nice, isn't it?
 ## R-markdown syntax
 
 Here are some example syntax from r-markdown:
-```
+```markdown
     ```python {include=FALSE}
     plot(blah);
     show()
     ```
 ```
 
-```
+```markdown
     ```{r echo = FALSE, results = 'asis'}
     library(knitr)
     kable(mtcars[1:5, ], caption = "A knitr kable.")
@@ -35,7 +35,7 @@ Here are some example syntax from r-markdown:
 ```
 
 potential syntax
-```
+```markdown
     ```python {nodisplay}
     plot(blah);
     show()
