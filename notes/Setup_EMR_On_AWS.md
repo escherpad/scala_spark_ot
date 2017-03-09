@@ -1,41 +1,45 @@
 # AWS Spark (EMR) setup tutorial
-    Goal: 
-        - Concepts and Command Line Tutorial
-        - Build steps
-        - EMR Configuration
+
+**Goal**: 
+
+- Concepts and Command Line Tutorial
+- Build steps
+- EMR Configuration
+        
 # Part I: Preparation 
+
 ## Basic Concepts
 
-- Root Account Credentials: The email address and password that you provided when creating the account
-- Amazon Resources Namses (ARNS):  Uniquely identify AWS resources.
-- Role: An AWS identity with permission policies that determine what the identity can and cannot do in AWS, However, instead of being uniquely associated with one person, a role is intended to be assumable by anyone needs it. (Compare with users)
+- **Root Account Credentials**: The email address and password that you provided when creating the account
+- **Amazon Resources Namses (ARNS)**:  Uniquely identify AWS resources.
+- **Role**: An AWS identity with permission policies that determine what the identity can and cannot do in AWS, However, instead of being uniquely associated with one person, a role is intended to be assumable by anyone needs it. (Compare with users)
   - Why? You can use roles to delegate access to users, applications, or services that don't normally have access to your AWS resources. EX. EMR instance needs to have the access to load new instance, access S3 storage, etc.
-- Instance Profiles: A container for an IAM role that you can use to pass role information to an EC2 instance when the instance starts. 
+- **Instance Profiles**: A container for an IAM role that you can use to pass role information to an EC2 instance when the instance starts. 
 
 **NOTE:** The instance profiles will automatically build when you build a new role, And the new instance profiles will use the same name as the role. (This may cause some problem, And can only be solved from aws cli)
 
 ## Command Line Tools
 Some tasks and bug is only possible to be solved with aws cli. Also, It would be much easier to manage the AWS services.
+
 ### Install
 ```sh
 pip install awscli
 ```
-### 
 
 ### How to set up
 #### Create your access key
 Download the <access key>.csv file. And you can find the aws\_access\_key\_id and the aws\_secret\_access\_key in it.
 1. Goto the IAM console, And select the user tab.
 
-![Select User Tab](./img/chooseUserTab.png)
+![Select User Tab](EMR_setup/chooseUserTab.png)
 
 2. Select your use name, goto your page. Then select security credentials tab.
 
-![Select Security Credentials](./img/chooseSecurityCredentials.png)
+![Select Security Credentials](EMR_setup/chooseSecurityCredentials.png)
 
 3. Generate your access key.
 
-![Generate Access key](./img/createAccessKey.png)
+![Generate Access key](EMR_setup/createAccessKey.png)
 
 ### Configure your aws cli
 #### Configure with command line
@@ -93,7 +97,7 @@ aws emr create-cluster --applications Name=Ganglia Name=Spark Name=Zeppelin --ec
 
 # Part III: BUG and Solution
 ## Invalid\_Default\_Role
-![Invalid Default Role](img/invalidRole.png)
+![Invalid Default Role](EMR_setup/invalidRole.png)
 ### Cause
 Instance profile is not exist.
  
