@@ -1,4 +1,3 @@
-----
 front-matter: value
 kernel: deep-learning-python3
 ----
