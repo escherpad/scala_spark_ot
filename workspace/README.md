@@ -2,7 +2,7 @@
 
 first install npm. Then install the following tools globally
 ```sh
-npm install -g babel-cli karma-cli
+npm install -g babel-cli karma-cli jest-cli
 ```
 Then install local packages
 ```bash
