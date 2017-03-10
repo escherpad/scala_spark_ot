@@ -21,7 +21,7 @@ That's nice, isn't it?
 
 Here are some example syntax from r-markdown:
 ```markdown
-    ```python {include=FALSE}
+    ```{python include=FALSE}
     plot(blah);
     show()
     ```
