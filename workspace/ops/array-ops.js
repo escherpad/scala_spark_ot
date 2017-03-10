@@ -12,3 +12,5 @@ export function mov(a, i, l, d) {
     const seg = a.slice(i, i + l);
     return s.splice(0, i).splice(d, 0, seg);
 }
+
+
