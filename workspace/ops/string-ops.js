@@ -3,11 +3,10 @@ export function ins(s, i, v) {
 }
 
 export function del(i, l) {
-    return s.slice(0, i) + s.slice(i+l);
+  return s.slice(0, i) + s.slice(i+l);
 }
 
 export function mov(s, i, l, d) {
-  const seg = s.slice(i, l);
-  return s.splice(i, l).splice(d, 0, seg);
+    return s.slice(0, i) + s.slice(i+l, d) + s.slice(d, l);
 }
 
