@@ -1,5 +1,7 @@
 import React, {Component} from "react";
 import {findDOMNode} from "react-dom";
+import debounce from "lodash.debounce";
+
 const COMMAND_KEYS = {
   8: "BACKSPACE",
   9: "TAB",
@@ -44,6 +46,7 @@ export default class Caret extends Component {
     this.onKeyDown = this._onKeyDown.bind(this);
     this.onCompositionStart = this._onCompositionStart.bind(this);
     this.onCompositionEnd = this._onCompositionEnd.bind(this);
+    this.dispatch = debounce(this._dispatch.bind(this), 0);
   }
 
   componentDidMount() {
@@ -67,7 +70,7 @@ export default class Caret extends Component {
 
   _onInput(e) {
     if (this.isComposing) return;
-    this._dispatch("INPUT", this.nativeElement.innerHTML);
+    this.dispatch("INPUT", this.nativeElement.innerHTML);
   }
 
   _onCompositionStart() {
@@ -75,8 +78,8 @@ export default class Caret extends Component {
   }
 
   _onCompositionEnd() {
+    this.dispatch("INPUT", this.nativeElement.innerHTML);
     this.isComposing = false;
-    this.onInput();
   }
 
   render() {
