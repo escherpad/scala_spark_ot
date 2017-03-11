@@ -1,6 +1,3 @@
-/**
- * Created by ge on 3/11/17.
- */
 export function transformIndex(ind, op) {
   if (op.type === "ins") {
     return (op.pos <= ind ? op.value.length + ind : ind);

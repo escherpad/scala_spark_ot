@@ -15,7 +15,6 @@ export function selection(state = DEFAULT_SELECTION, action) {
     return transformCursor(state, {...action, type: "ins"});
   } else if (action.type === "BACKSPACE") {
     return transformCursor(state, {type: 'del', pos: action.pos - 1, length: 1})
-
   }
   return state;
 }
