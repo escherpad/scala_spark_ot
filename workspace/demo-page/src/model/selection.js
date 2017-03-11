@@ -11,10 +11,8 @@ export function selection(state = DEFAULT_SELECTION, action) {
     return {...state, anchor: action.value}
   } else if (action.type === "HEAD") {
     return {...state, head: action.value}
-  } else if (action.type === "INPUT") {
-    return transformCursor(state, {...action, type: "ins"});
-  } else if (action.type === "BACKSPACE") {
-    return transformCursor(state, {type: 'del', pos: action.pos - 1, length: 1})
+  } else if (action.op) {
+    return transformCursor(state, action.op)
   }
   return state;
 }
