@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --watch",
-    "build": "babel -d ./ops ./ops",
-    "dev": "webpack --watch --progress --profile --colors --config ./demo-page/webpack.dev.config.js"
+    "watch-build": "babel ./ops --out-dir dist/ops -w --source-maps",
+    "build": "babel ./ops --out-dir dist/ops"
   },
   "jest": {
     "verbose": true,

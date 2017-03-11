@@ -7,6 +7,8 @@ import Selector from "./lib/Selector";
 import Caret from "./components/Caret";
 import Selection from "./components/Selection";
 
+import {ins} from "../../dist/ops/string-ops";
+
 import "github-markdown-css";
 class DemoComponent extends Component {
   static PropTypes = {
@@ -42,6 +44,7 @@ class DemoComponent extends Component {
                value={this.props.selection.head}
                onChange={(e) => this.props.dispatch({type: "HEAD", value: Number(e.target.value)})}/>
       </div>
+      <button onClick={() => alert(ins('hahaha', 0, 'google'))}>test</button>
     </article>
   }
 }
