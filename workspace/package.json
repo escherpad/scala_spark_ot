@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --watch",
-    "watch-build": "babel ./ops --out-dir dist/ops -w --source-maps",
-    "build": "babel ./ops --out-dir dist/ops"
+    "watch-build": "babel ./src --out-dir dist -w --source-maps",
+    "build": "babel ./src --out-dir dist"
   },
   "jest": {
     "verbose": true,
