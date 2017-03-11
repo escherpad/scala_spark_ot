@@ -5,6 +5,7 @@
 import React, {Component, PropTypes} from "react";
 import Selector from "./lib/Selector";
 import Caret from "./components/Caret";
+import InputBlock from "./components/InputBlock";
 import Selection from "./components/Selection";
 
 import {ins} from "../../dist/ops/string-ops";
@@ -18,18 +19,18 @@ class DemoComponent extends Component {
 
   render() {
     const props = this.props;
-    console.log(props);
     const left = Math.min(props.selection.anchor, props.selection.head);
     const right = Math.max(props.selection.anchor, props.selection.head);
+    const reversed = (props.selection.anchor >= props.selection.head);
     return <article className="markdown-body">
       <h1>Operational Transform Demo</h1>
       <p>The &lt;pre&gt; block below shows the content of the source.</p>
       <pre>{
-        props.source.slice(0, left)}{
-        (left === right) ?
-          <Caret/> :
-          <Selection
-            reversed={(props.selection.anchor > props.selection.head)}>{props.source.slice(left, right)}</Selection>
+        props.source.slice(0, left)
+      }{
+        reversed ?
+          [<InputBlock/>, <Caret/>, <Selection>{props.source.slice(left, right)}</Selection>] :
+          [<Selection>{props.source.slice(left, right)}</Selection>, <InputBlock/>, <Caret/>]
       }{props.source.slice(right)
       }</pre>
       <div>

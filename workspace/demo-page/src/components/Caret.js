@@ -1,4 +1,5 @@
 import React from "react";
+import "./Caret.css";
 
 const style = {
   position: "relative",
@@ -11,5 +12,5 @@ const style = {
   marginTop: "calc(1em - 20px)"
 };
 export default function Caret() {
-  return <span style={style}/>
+  return <span className="Caret-blinking" style={style}/>
 }
