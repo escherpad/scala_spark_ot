@@ -27,8 +27,22 @@ class DemoComponent extends Component {
         props.source.slice(0, left)
       }{
         reversed ?
-          [<InputBlock/>, <Caret/>, <Selection>{props.source.slice(left, right)}</Selection>] :
-          [<Selection>{props.source.slice(left, right)}</Selection>, <InputBlock/>, <Caret/>]
+          [<InputBlock key="input-block"
+                       focus="true"
+                       onChange={(command, value, op) => props.dispatch({
+                         type: command,
+                         pos: props.selection.head,
+                         value
+                       })}
+          />, <Caret key="caret"/>, <Selection key="selection">{props.source.slice(left, right)}</Selection>] :
+          [<Selection key="selection">{props.source.slice(left, right)}</Selection>, <InputBlock
+            key="input-block"
+            focus="true"
+            onChange={(command, value, op) => props.dispatch({
+              type: command,
+              pos: props.selection.head,
+              value
+            })}/>, <Caret key="caret"/>]
       }{props.source.slice(right)
       }</pre>
       <div>

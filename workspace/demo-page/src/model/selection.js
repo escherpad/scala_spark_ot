@@ -11,6 +11,18 @@ export function selection(state = DEFAULT_SELECTION, action) {
     return {...state, anchor: action.value}
   } else if (action.type === "HEAD") {
     return {...state, head: action.value}
+  } else if (action.type === "LEFT-ARROW") {
+    return action.value.shiftKey ? {...state, head: state.head - 1} : {
+        ...state,
+        anchor: state.head - 1,
+        head: state.head - 1
+      }
+  } else if (action.type === "RIGHT-ARROW") {
+    return action.value.shiftKey ? {...state, head: state.head + 1} : {
+        ...state,
+        anchor: state.head + 1,
+        head: state.head + 1
+      };
   } else if (action.op) {
     return transformCursor(state, action.op)
   }
