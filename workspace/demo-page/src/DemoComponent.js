@@ -32,6 +32,12 @@ class DemoComponent extends Component {
       }{props.source.slice(right)
       }</pre>
       <div>
+        <label htmlFor="cursor"><code>selection</code></label>
+        <input name="cursor" type="number"
+               value={props.selection.head}
+               onChange={(e) => props.dispatch({type: "CURSOR", value: Number(e.target.value)})}/>
+      </div>
+      <div>
         <label htmlFor="anchor"><code>selection.anchor</code></label>
         <input name="anchor" type="number"
                value={props.selection.anchor}

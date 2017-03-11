@@ -5,7 +5,7 @@ const DEFAULT_SELECTION = {
   head: 10
 };
 export function selection(state = DEFAULT_SELECTION, action) {
-  if (action.type === "CARET") {
+  if (action.type === "CURSOR") {
     return {...state, anchor: action.value, head: action.value}
   } else if (action.type === "ANCHOR") {
     return {...state, anchor: action.value}
