@@ -18,6 +18,9 @@ function opPreReducer(state = {source: DEFAULT_SOURCE, selection: DEFAULT_SELECT
   } else if (action.type === "BACKSPACE") {
     if (del_op.length > 0) ops = [del_op];
     else ops = [{type: "del", pos: state.selection.anchor - 1, length: 1}];
+  } else if (action.type === "ENTER") {
+    if (del_op.length > 0) ops = [del_op];
+    else ops = [{type: "ins", pos: left, value: "\n"}];
   } else if (action.type === "MOVE") {
     if (del_op.length > 0) ops = [del_op];
     // notice: Cursor might lose focus.
