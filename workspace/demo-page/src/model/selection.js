@@ -1,6 +1,6 @@
 import {transformCursor} from "../../../dist/string-transform";
 
-const DEFAULT_SELECTION = {
+export const DEFAULT_SELECTION = {
   anchor: 3,
   head: 10
 };

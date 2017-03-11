@@ -19,30 +19,22 @@ class DemoComponent extends Component {
     const props = this.props;
     const left = Math.min(props.selection.anchor, props.selection.head);
     const right = Math.max(props.selection.anchor, props.selection.head);
-    const reversed = (props.selection.anchor >= props.selection.head);
+    const isReversed = (props.selection.anchor >= props.selection.head);
     return <article className="markdown-body">
       <h1>Operational Transform Demo</h1>
       <p>The &lt;pre&gt; block below shows the content of the source.</p>
       <pre>{
         props.source.slice(0, left)
       }{
-        reversed ?
+        isReversed ?
           [<InputBlock key="input-block"
                        focus="true"
-                       onChange={(command, value, op) => props.dispatch({
-                         type: command,
-                         pos: props.selection.head,
-                         value
-                       })}
+                       onChange={(command, value, op) => props.dispatch({type: command, value})}
           />, <Caret key="caret"/>, <Selection key="selection">{props.source.slice(left, right)}</Selection>] :
           [<Selection key="selection">{props.source.slice(left, right)}</Selection>, <InputBlock
             key="input-block"
             focus="true"
-            onChange={(command, value, op) => props.dispatch({
-              type: command,
-              pos: props.selection.head,
-              value
-            })}/>, <Caret key="caret"/>]
+            onChange={(command, value, op) => props.dispatch({type: command, value})}/>, <Caret key="caret"/>]
       }{props.source.slice(right)
       }</pre>
       <div>
@@ -68,15 +60,14 @@ class DemoComponent extends Component {
         <input type="text"
                onChange={(e) => this.isComposing || props.dispatch({
                  type: "INPUT",
-                 pos: props.selection.head,
                  value: e.target.value
                }) || (e.target.value = '')}
                onCompositionStart={(e) => this.isComposing = true}
                onCompositionEnd={(e) => (this.isComposing = false) ||
-               props.dispatch({type: "INPUT", pos: props.selection.head, value: e.target.value}) ||
+               props.dispatch({type: "INPUT", value: e.target.value}) ||
                (e.target.value = '')}
         />&nbsp;
-        <kbd onClick={() => props.dispatch({type: "BACKSPACE", pos: props.selection.head})}>backspace</kbd>
+        <kbd onClick={() => props.dispatch({type: "BACKSPACE"})}>backspace</kbd>
       </div>
     </article>
   }

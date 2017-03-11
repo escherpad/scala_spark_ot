@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {findDOMNode} from "react-dom";
-const COMMAND_LIST = {
+const COMMAND_KEYS = {
   8: "BACKSPACE",
   9: "TAB",
   13: "ENTER",
@@ -9,7 +9,7 @@ const COMMAND_LIST = {
   18: "ALT",
   19: "PAUSE/BREAK",
   27: "ESCAPE",
-  32: "SPACE",
+  // 32: "SPACE", // comment out to allow input of `space`.
   33: "PAGE-UP",
   34: "PAGE-DOWN",
   35: "END",
@@ -58,7 +58,7 @@ export default class Caret extends Component {
 
   _onKeyDown(e) {
     if (this.isComposing) return;
-    let command = COMMAND_LIST[e.which];
+    let command = COMMAND_KEYS[e.which];
     if (!command) return;
     e.preventDefault();
     e.persist();
