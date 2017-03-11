@@ -8,8 +8,6 @@ import Caret from "./components/Caret";
 import InputBlock from "./components/InputBlock";
 import Selection from "./components/Selection";
 
-import {ins} from "../../dist/ops/string-ops";
-
 import "github-markdown-css";
 class DemoComponent extends Component {
   static PropTypes = {
@@ -36,16 +34,30 @@ class DemoComponent extends Component {
       <div>
         <label htmlFor="anchor"><code>selection.anchor</code></label>
         <input name="anchor" type="number"
-               value={this.props.selection.anchor}
-               onChange={(e) => this.props.dispatch({type: "ANCHOR", value: Number(e.target.value)})}/>
+               value={props.selection.anchor}
+               onChange={(e) => props.dispatch({type: "ANCHOR", value: Number(e.target.value)})}/>
       </div>
       <div>
         <label htmlFor="anchor"><code>selection.head</code></label>
         <input type="number"
-               value={this.props.selection.head}
-               onChange={(e) => this.props.dispatch({type: "HEAD", value: Number(e.target.value)})}/>
+               value={props.selection.head}
+               onChange={(e) => props.dispatch({type: "HEAD", value: Number(e.target.value)})}/>
       </div>
-      <button onClick={() => alert(ins('hahaha', 0, 'google'))}>test</button>
+      <div>
+        <label htmlFor="anchor"><code>input</code></label>
+        <input type="text"
+               onChange={(e) => this.isComposing || props.dispatch({
+                 type: "INPUT",
+                 pos: props.selection.head,
+                 value: e.target.value
+               }) || (e.target.value = '')}
+               onCompositionStart={(e) => this.isComposing = true}
+               onCompositionEnd={(e) => (this.isComposing = false) ||
+               props.dispatch({type: "INPUT", pos: props.selection.head, value: e.target.value}) ||
+               (e.target.value = '')}
+        />&nbsp;
+        <kbd onClick={() => props.dispatch({type: "BACKSPACE", pos: props.selection.head})}>backspace</kbd>
+      </div>
     </article>
   }
 }
