@@ -21,49 +21,111 @@ function applyAndCompare(s, ops0, ops1) {
   s_true.should.equal(s_transform);
 }
 
-// op test del then insert
+function buildTestOpList(op0, op1) {
+  let ops_ot = transform(op0, op1);
+  ops_ot.should.be.a.Array();
+  let ops = [op0].concat(ops_ot);
+  return ops;
+}
+
+function testOpPair(s, op0, op1) {
+  let ops0 = [op0, op1];
+  let ops1 = buildTestOpList(op0, op1);
+  applyAndCompare(s, ops0, ops1);
+}
+
+// op test
+// del then insert
 it("del-then-ins0", () => {
   let s = "0123456789";
 
-  let op_del = makeOpDel(0, 3);
-  let op_ins = makeOpIns(4, "a");
+  let op0 = makeOpDel(0, 3);
+  let op1 = makeOpIns(4, "ab");
 
-  let ops_ot = transform(op_ins, op_del);
-  ops_ot.should.be.a.Array();
-
-  let ops0 = [op_del, op_ins];
-  let ops1 = [op_ins].concat(ops_ot);
-
-  applyAndCompare(s, ops0, ops1);
+  testOpPair(s, op0, op1);
 });
-
-it("del-then-ins0", () => {
-  let s = "0123456789";
-
-  let op_del = makeOpDel(0, 3);
-  let op_ins = makeOpIns(4, "a");
-
-  let ops_ot = transform(op_ins, op_del);
-  ops_ot.should.be.a.Array();
-
-  let ops0 = [op_del, op_ins];
-  let ops1 = [op_ins].concat(ops_ot);
-
-  applyAndCompare(s, ops0, ops1);
-});
-
 
 it("del-then-ins1", () => {
   let s = "0123456789";
 
-  let op_del = makeOpDel(2, 3);
-  let op_ins = makeOpIns(3, "a");
+  let op0 = makeOpDel(2, 3);
+  let op1 = makeOpIns(3, "ab");
 
-  let ops_ot = transform(op_ins, op_del);
-  ops_ot.should.be.a.Array();
+  testOpPair(s, op0, op1);
+});
 
-  let ops0 = [op_del, op_ins];
-  let ops1 = [op_ins].concat(ops_ot);
 
-  applyAndCompare(s, ops0, ops1);
+it("del-then-ins2", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpDel(6, 3);
+  let op1 = makeOpIns(4, "ab");
+
+  testOpPair(s, op0, op1);
+});
+
+// del then del
+it("del-then-del0", () => {
+  let s = "0123456789";
+  let op0 = makeOpDel(0, 3);
+  let op1 = makeOpDel(4, 2);
+
+  testOpPair(s, op0, op1);
+});
+
+it("del-then-del1", () => {
+  let s = "0123456789";
+  let op0 = makeOpDel(2, 3);
+  let op1 = makeOpDel(3, 2);
+
+  testOpPair(s, op0, op1);
+});
+
+
+it("del-then-del2", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpDel(6, 3);
+  let op1 = makeOpDel(4, 2);
+
+  testOpPair(s, op0, op1);
+});
+
+
+// ins then del
+it("ins-then-del0", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpIns(4, "ab");
+  let op1 = makeOpDel(6, 3);
+
+  testOpPair(s, op0, op1);
+});
+
+it("ins-then-del1", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpIns(4, "ab");
+  let op1 = makeOpDel(0, 3);
+
+  testOpPair(s, op0, op1);
+});
+
+// ins then ins test
+it("ins-then-ins0", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpIns(4, "ab");
+  let op1 = makeOpIns(6, 3);
+
+  testOpPair(s, op0, op1);
+});
+
+it("ins-then-ins1", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpIns(4, "ab");
+  let op1 = makeOpIns(0, 3);
+
+  testOpPair(s, op0, op1);
 });
