@@ -1,5 +1,6 @@
 # production
 **/*.bundle.js
+dist
 
 # dependencies
 /node_modules

@@ -9,7 +9,8 @@ Then install local packages
 npm install
 ```
 ### To develop
-run `npm run dev`, or use IntelliJ built-in integration with `npm`. 
+First run `watch-build` in workspace/package.json, to have babel watch and compile from workspace root.
+Then run `start` under demo-page, or use IntelliJ built-in integration with `npm`. 
 
 This rebuilds the `./demo-page/index.js` file as you change it (and dependencies). you still need to reload the webpage manually.
 

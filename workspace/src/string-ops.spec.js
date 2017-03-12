@@ -1,4 +1,4 @@
-require('should');
+import "should";
 import {ins, del, mov} from "./string-ops";
 
 // ins test
