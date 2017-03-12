@@ -38,5 +38,5 @@ export function transform(op1, op2) {
   } else {
     console.log("WARNING: ot not implemented");
   }
-  return ops
+  return ops;
 }
