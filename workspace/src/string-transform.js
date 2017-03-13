@@ -48,128 +48,196 @@ function transform_del_del(op0, op1) {
 }
 
 function transform_del_mov(op0, op1) {
-  // case 0: destination of Mov located before deletion area
-  if((op1.pos+op1.length<=op0.pos && op1.des <= op0.pos)||(op1.pos >= op0.pos+op0.length && (op1.des >= op0.pos+op0.length || op1.des <= op0.pos))){
+  var l1 = op1.length;
+  var l0 = op0.length;
+
+  // case 1: Mov area is left to Del area
+  /* Wrapped with block comment so the comment could be folded
+
+   // case 1.1:
+   //     ______________
+   //    |              |
+   //    |              v
+   //   [_____]     [--------]
+   //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
+   //    op1           op0(del)
+   //
+   // case 1.2:
+   //     _______
+   //    |       |
+   //    |       v
+   //   [_____]     [--------]
+   //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
+   //    op1           op0(del)
+   //
+   // case 1.3:
+   //     _______________________
+   //    |                       |
+   //    |                       v
+   //   [_____]     [--------]
+   //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
+   //    op1           op0(del)
+   //
+   // case 1.4:
+   //  __
+   // |  |
+   // v  |
+   //   [_____]     [--------]
+   //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
+   //    op1           op0(del)
+   */
+  // case 1
+  if (op1.pos + l1 <= op0.pos) {
+    if (op1.des >= op0.pos && op1.des <= op0.pos + l0) {
+      // case 1.1
+      return makeOpMov(op1.pos, l1, op0.pos);
+    } else if (op1.des >= op0.pos + l0) {
+      // case 1.3
+      return makeOpMov(op1.pos, l1, op0.op1.des - l0);
+    } else {
+      // case 1.2 & 1.4
+      return op1;
+    }
+  } else if (op1.pos <= op0.pos && op1.pos + l1 >= op0.pos && op1.pos + l1 <= op0.pos + l0) {
+    // case 2: Partial Overlap (Left to op0 area)
+    /*
+     // case 2.1:
+     //     ____________
+     //    |            |
+     //    |            V
+     //   {____[===}------]
+     //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
+     //    op1       op0(del)
+
+     // case 2.2:
+     //     ___________________
+     //    |                   |
+     //    |                   V
+     //   {____[===}------]
+     //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
+     //    op1       op0(del)
+
+     // case 2.3:
+     //  __
+     // |  |
+     // |  |
+     // v {____[===}------]
+     //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
+     //    op1        op0(del)
+
+     */
+    if (op1.des >= op1.pos + l1 && op1.des <= op0.pos + l0) {
+      // case 2.1
+      return makeOpMov(0, 0, 0);
+      // as same as it doesn't move
+    } else if (op1.des >= op0.pos + l0) {
+      // case 2.2
+      return makeOpMov(op1.pos, op0.pos - op1.pos, op1.des - l0);
+    } else {
+      // case 2.3
+      return makeOpMov(op1.pos, op0.pos - op1.pos, op1.des);
+    }
+  } else if (op1.pos >= op0.pos && op1.pos + op1.length <= op0.pos + op0.length) {
+    // case 3: Fully Overlap between Mov area and Del area
+    /*
+     //  ________________________
+     // |         |              |
+     // v         |              V
+     //   [-----{===}------]
+     //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
+     //          op1  op0(del)
+     */
+    // same as it doesn't move (the move area is deleted before move)
+    return makeOpMov(0, 0, 0);
+  } else if (op1.pos >= op0.pos && op1.pos <= op0.pos + l0 && op1.pos + l1 >= op0.pos + l0) {
+    // case 4: Partial Overlap (Right to op0 area)
+    /*
+     case 4.1
+     //           _______
+     //          |       |
+     //          v       |
+     //       [____{===]------}
+     //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
+     //        op0(del)   op1
+
+     case 4.2
+     //     ________________
+     //    |                |
+     //    v                |
+     //       [____{===]------}
+     //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
+     //        op0(del)   op1
+
+     case 4.3
+     //                     ___________
+     //                    |           |
+     //                    |           v
+     //       [____{===]------}
+     //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
+     //        op0(del)   op1
+     */
+    if (op1.des >= op0.pos && op1.des <= op1.pos) {
+      // case 4.1
+      return makeOpMov(0, 0, 0);
+      // same as it doesn't move
+    } else if (op1.des <= op0.pos) {
+      // case 4.2
+      return makeOpMov(op0.pos, op1.pos + l1 - op0.pos - l0, op1.des);
+    } else {
+      // case 4.3
+      return makeOpMov(op0.pos, op1.pos + l1 - op0.pos - l0, op1.des - l0);
+    }
+  } else if (op1.pos >= op0.pos + l0) {
+    // case 5: Mov area is right to Del area
+    /*
+     // case 5.1:
+     //              _______________
+     //             |               |
+     //             v               |
+     //        [--------]       [_____]
+     //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
+     //         op0(del)         op1
+
+     // case 5.2:
+     //                    _______
+     //                   |       |
+     //                   v       |
+     //        [--------]       [_____]
+     //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
+     //         op0(del)         op1
+
+     // case 5.3:
+     //                            _________
+     //                           |         |
+     //                           |         v
+     //        [--------]       [_____]
+     //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
+     //         op0(del)         op1
+
+     // case 5.4:
+     //    _______________________
+     //   |                       |
+     //   v                       |
+     //        [--------]       [_____]
+     //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
+     //         op0(del)         op1
+     */
+    if (op1.des >= op0.pos && op1.des <= op0.pos + l0) {
+      // case 5.1
+      return makeOpMov(op1.pos - l0, l1, op0.pos);
+    } else if (op1.des <= op1.pos && op1.des <= op0.pos + l0) {
+      // case 5.2
+      return makeOpMov(op1.pos - l0, l1, op1.des - l0);
+    } else if (op1.des >= op1.pos + l1) {
+      // case 5.3
+      return makeOpMov(op1.pos - l0, l1, op1.des - l0);
+    } else if (op1.des <= op0.pos) {
+      // case 5.4
+      return makeOpMov(op1.pos - l0, l1, op1.des);
+    }
+  } else {
+    // other cases: idk, man. I'm confusing myself at 5AM
     return op1;
-  }
-
-  // case 1: destination of Mov located in the deletion area
-  // case 1.1:
-  //     ______________
-  //    |              |
-  //    |              v
-  //   [_____]     [--------]
-  //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
-  //    op1           op0(del)
-
-  // case 1.2:
-  //              _______________
-  //             |               |
-  //             v               |
-  //        [--------]       [_____]
-  //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
-  //         op0(del)         op1
-  if ((op1.pos+op1.length<=op0.pos && op1.des >= op0.pos && op1.des <= op0.pos+op0.length)
-    ||(op1.pos>=op0.pos+op0.length && op1.des>=op0.pos && op1.des<=op0.pos+op0.length)){
-    return makeOpMov(op1.pos,op1.length,op0.pos);
-  }
-
-  // case 2: destination of Mov located after deletion area
-  // case 2.1:
-  //     _______________________
-  //    |                       |
-  //    |                       v
-  //   [_____]     [--------]
-  //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
-  //    op1           op0(del)
-
-  // case 2.2:
-  //                    _______
-  //                   |       |
-  //                   v       |
-  //        [--------]       [_____]
-  //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
-  //         op0(del)         op1
-  if (op1.pos+op1.length<=op0.pos && op1.des >= op0.pos+op0.length){
-    return makeOpMov(op1.pos,op1.length,op1.des-op0.length);
-  }
-
-  // case 3: Partial Overlap between Mov area and Del area
-  // case 3.1:
-  //     ____________
-  //    |            |
-  //    |            V
-  //   {____[===}------]
-  //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
-  //    op1       op0(del)
-  //
-  //           _______
-  //          |       |
-  //          v       |
-  //       [____{===]------}
-  //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
-  //        op0(del)   op1
-
-  if((op1.pos<=op0.pos && op1.pos+op1.length<=op0.pos+op0.length&& op1.pos+op1.length >= op0.pos
-    && op1.des<=op0.pos+op0.length && op1.des>=op1.pos) || (op1.pos>=op0.pos && op1.pos<=op0.pos+op0.length
-    && op1.pos+op1.length>=op0.pos+op0.length && op1.des>=op0.pos && op1.des<=op1.pos)){
-    return makeOpMov(0,0,0); // same as it doesn't move
-  }
-
-  // case 3.2:
-  //  __
-  // |  |
-  // |  |
-  // v {____[===}------]
-  //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
-  //    op1        op0(del)
-
-  if (op1.pos<=op0.pos && op1.pos+op1.length<=op0.pos+op0.length&& op1.pos+op1.length >= op0.pos && op1.des<=op0.pos){
-    return makeOpMov(op1.pos,op0.pos-op1.pos,op1.des);
-  }
-
-  // case 3.3:
-  //     ___________________
-  //    |                   |
-  //    |                   V
-  //   {____[===}------]
-  //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
-  //    op1       op0(del)
-  if (op1.pos<=op0.pos && op1.pos+op1.length<=op0.pos+op0.length&& op1.pos+op1.length >= op0.pos && op1.des>=op0.pos+op0.length){
-    return makeOpMov(op1.pos,op0.pos-op1.pos,op1.des-op0.length);
-  }
-
-  // case 3.4:
-  //     ________________
-  //    |                |
-  //    v                |
-  //       [____{===]------}
-  //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
-  //        op0(del)   op1
-  if (op1.pos>=op0.pos && op1.pos<=op0.pos+op0.length && op1.pos+op1.length>=op0.pos+op0.length && op1.des<=op0.pos){
-    return makeOpMov(op0.pos,op1.pos+op1.length-op0.pos-op0.length,op1.des);
-  }
-
-  // case 3.5:
-  //                     ___________
-  //                    |           |
-  //                    |           v
-  //       [____{===]------}
-  //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
-  //        op0(del)   op1
-  if (op1.pos>=op0.pos && op1.pos<=op0.pos+op0.length && op1.pos+op1.length>=op0.pos+op0.length && op1.des>=op1.pos+op1.length){
-    return makeOpMov(op0.pos,op1.pos+op1.length-op0.pos-op0.length,op1.des-op0.length);
-  }
-
-  // case 4: Fully Overlap between Mov area and Del area
-  //            ___________________
-  //           |                   |
-  //           |                   V
-  //   [-----{===}------]
-  //  0 1 2 3 4 5 6 7 8 9 10 11 12 13 ...
-  //          op1  op0(del)
-  if (op1.pos>=op0.pos && op1.pos+op1.length<=op0.pos+op0.length){
-    return makeOpMov(0,0,0);
   }
 }
 

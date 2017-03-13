@@ -18,7 +18,7 @@ export function makeOpMov (pos, length, des) {
   return {
     type : "mov",
     pos : pos,
-    value : length,
+    length : length,
     des : des
   };
 };
