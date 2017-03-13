@@ -22,7 +22,6 @@
   "author": "Jiaming Guo, Cha Chen, Ge Yang",
   "license": "UNLICENSED",
   "devDependencies": {
-    "babel-cli": "^6.23.0",
     "babel-core": "^6.9.1",
     "babel-jest": "^12.1.0",
     "babel-loader": "^6.2.4",
