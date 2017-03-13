@@ -14,11 +14,11 @@ export function makeOpDel (pos, length) {
   };
 };
 
-export function makeOpMov (pos, value, des) {
+export function makeOpMov (pos, length, des) {
   return {
     type : "mov",
     pos : pos,
-    value : value,
+    value : length,
     des : des
   };
 };
