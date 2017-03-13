@@ -20,31 +20,31 @@ export function transformCursor(cursor, op) {
 function transform_ins_del(op0, op1) {
   return op1.pos + op1.length <= op0.pos ? [op1] :
     op1.pos <= op0.pos ? [
-      makeOpDel(op1.pos, op0.value.pos - op1.pos),
-      makeOpDel(op0.pos + op0.value.length - (op0.pos - op1.pos), op1.length - (op0.pos - op1.pos))
-    ] :
-    [makeOpDel(op1.pos + op0.value.length, op1.length)];
+        makeOpDel(op1.pos, op0.value.pos - op1.pos),
+        makeOpDel(op0.pos + op0.value.length - (op0.pos - op1.pos), op1.length - (op0.pos - op1.pos))
+      ] :
+      [makeOpDel(op1.pos + op0.value.length, op1.length)];
 }
 
 function transform_ins_ins(op0, op1) {
   return op1.pos + op1.length <= op0.pos ? [op1] :
     op1.pos <= op0.pos ? [
-      makeOpIns(op1.pos, op0.value.pos - op1.pos),
-      makeOpIns(op0.pos + op0.value.length - (op0.pos - op1.pos), op1.length - (op0.pos - op1.pos))
-    ] :
-    [makeOpIns(op1.pos + op0.value.length, op1.length)];
+        makeOpIns(op1.pos, op0.value.pos - op1.pos),
+        makeOpIns(op0.pos + op0.value.length - (op0.pos - op1.pos), op1.length - (op0.pos - op1.pos))
+      ] :
+      [makeOpIns(op1.pos + op0.value.length, op1.length)];
 }
 
 function transform_del_ins(op0, op1) {
   return op1.pos <= op0.pos ? [op1] :
     op1.pos <= op0.pos + op0.length ? [makeOpIns(op0.pos, op1.value)] :
-    [makeOpIns(op1.pos - op0.length, op1.value)];
+      [makeOpIns(op1.pos - op0.length, op1.value)];
 }
 
 function transform_del_del(op0, op1) {
   return op1.pos <= op0.pos ? [op1] :
     op1.pos <= op0.pos + op0.length ? [makeOpDel(op0.pos, op1.value)] :
-    [makeOpDel(op1.pos - op0.length, op1.value)];
+      [makeOpDel(op1.pos - op0.length, op1.value)];
 }
 
 function transform_del_mov(op0, op1) {
@@ -247,7 +247,7 @@ export function transform(op0, op1) {
   if (op0.type === "ins") {
     if (op1.type === "del") {
       return transform_ins_del(op0, op1);
-    } else if (op1.type === "ins"){
+    } else if (op1.type === "ins") {
       return transform_ins_ins(op0, op1);
     } else if (op1.type === "mov") {
       // todo: ins then mov
