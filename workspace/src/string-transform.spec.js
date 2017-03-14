@@ -129,3 +129,139 @@ it("ins-then-ins1", () => {
 
   testOpPair(s, op0, op1);
 });
+
+// del mov test
+it("del-then-mov1.1", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpDel(6, 2);
+  let op1 = makeOpMov(1, 2, 7);
+
+  testOpPair(s, op0, op1);
+});
+
+it("del-then-mov1.2", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpDel(6, 2);
+  let op1 = makeOpMov(1, 2, 5);
+
+  testOpPair(s, op0, op1);
+});
+
+it("del-then-mov1.3", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpDel(6, 2);
+  let op1 = makeOpMov(1, 2, 9);
+
+  testOpPair(s, op0, op1);
+});
+
+it("del-then-mov1.4", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpDel(6, 2);
+  let op1 = makeOpMov(1, 2, 0);
+
+  testOpPair(s, op0, op1);
+});
+
+it("del-then-mov2.1", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpDel(4, 3);
+  let op1 = makeOpMov(3, 2, 6);
+
+  testOpPair(s, op0, op1);
+});
+
+it("del-then-mov2.2", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpDel(4, 3);
+  let op1 = makeOpMov(3, 2, 8);
+
+  testOpPair(s, op0, op1);
+});
+
+it("del-then-mov2.3", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpDel(4, 3);
+  let op1 = makeOpMov(3, 2, 1);
+
+  testOpPair(s, op0, op1);
+});
+
+it("del-then-mov3", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpDel(2, 6);
+  let op1 = makeOpMov(3, 3, 1);
+
+  testOpPair(s, op0, op1);
+});
+
+it("del-then-mov4.1", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpDel(3, 3);
+  let op1 = makeOpMov(5, 3, 4);
+
+  testOpPair(s, op0, op1);
+});
+
+it("del-then-mov4.2", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpDel(3, 3);
+  let op1 = makeOpMov(5, 3, 1);
+
+  testOpPair(s, op0, op1);
+});
+
+it("del-then-mov4.3", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpDel(3, 3);
+  let op1 = makeOpMov(5, 3, 9);
+
+  testOpPair(s, op0, op1);
+});
+
+it("del-then-mov5.1", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpDel(2, 2);
+  let op1 = makeOpMov(6, 2, 3);
+
+  testOpPair(s, op0, op1);
+});
+
+it("del-then-mov5.2", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpDel(2, 2);
+  let op1 = makeOpMov(6, 2, 4);
+
+  testOpPair(s, op0, op1);
+});
+
+it("del-then-mov5.3", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpDel(2, 2);
+  let op1 = makeOpMov(6, 2, 9);
+
+  testOpPair(s, op0, op1);
+});
+
+it("del-then-mov5.4", () => {
+  let s = "0123456789";
+
+  let op0 = makeOpDel(2, 2);
+  let op1 = makeOpMov(6, 2, 0);
+
+  testOpPair(s, op0, op1);
+});

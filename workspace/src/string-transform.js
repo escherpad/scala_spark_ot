@@ -90,13 +90,13 @@ function transform_del_mov(op0, op1) {
   if (op1.pos + l1 <= op0.pos) {
     if (op1.des >= op0.pos && op1.des <= op0.pos + l0) {
       // case 1.1
-      return makeOpMov(op1.pos, l1, op0.pos);
+      return [makeOpMov(op1.pos, l1, op0.pos)];
     } else if (op1.des >= op0.pos + l0) {
       // case 1.3
-      return makeOpMov(op1.pos, l1, op0.op1.des - l0);
+      return [makeOpMov(op1.pos, l1, op1.des - l0)];
     } else {
       // case 1.2 & 1.4
-      return op1;
+      return [op1];
     }
   } else if (op1.pos <= op0.pos && op1.pos + l1 >= op0.pos && op1.pos + l1 <= op0.pos + l0) {
     // case 2: Partial Overlap (Left to op0 area)
@@ -128,14 +128,14 @@ function transform_del_mov(op0, op1) {
      */
     if (op1.des >= op1.pos + l1 && op1.des <= op0.pos + l0) {
       // case 2.1
-      return makeOpMov(0, 0, 0);
+      return [makeOpMov(0, 0, 0)];
       // as same as it doesn't move
     } else if (op1.des >= op0.pos + l0) {
       // case 2.2
-      return makeOpMov(op1.pos, op0.pos - op1.pos, op1.des - l0);
+      return [makeOpMov(op1.pos, op0.pos - op1.pos, op1.des - l0)];
     } else {
       // case 2.3
-      return makeOpMov(op1.pos, op0.pos - op1.pos, op1.des);
+      return [makeOpMov(op1.pos, op0.pos - op1.pos, op1.des)];
     }
   } else if (op1.pos >= op0.pos && op1.pos + op1.length <= op0.pos + op0.length) {
     // case 3: Fully Overlap between Mov area and Del area
@@ -148,7 +148,7 @@ function transform_del_mov(op0, op1) {
      //          op1  op0(del)
      */
     // same as it doesn't move (the move area is deleted before move)
-    return makeOpMov(0, 0, 0);
+    return [makeOpMov(0, 0, 0)];
   } else if (op1.pos >= op0.pos && op1.pos <= op0.pos + l0 && op1.pos + l1 >= op0.pos + l0) {
     // case 4: Partial Overlap (Right to op0 area)
     /*
@@ -178,14 +178,14 @@ function transform_del_mov(op0, op1) {
      */
     if (op1.des >= op0.pos && op1.des <= op1.pos) {
       // case 4.1
-      return makeOpMov(0, 0, 0);
+      return [makeOpMov(0, 0, 0)];
       // same as it doesn't move
     } else if (op1.des <= op0.pos) {
       // case 4.2
-      return makeOpMov(op0.pos, op1.pos + l1 - op0.pos - l0, op1.des);
+      return [makeOpMov(op0.pos, op1.pos + l1 - op0.pos - l0, op1.des)];
     } else {
       // case 4.3
-      return makeOpMov(op0.pos, op1.pos + l1 - op0.pos - l0, op1.des - l0);
+      return [makeOpMov(op0.pos, op1.pos + l1 - op0.pos - l0, op1.des - l0)];
     }
   } else if (op1.pos >= op0.pos + l0) {
     // case 5: Mov area is right to Del area
@@ -224,20 +224,20 @@ function transform_del_mov(op0, op1) {
      */
     if (op1.des >= op0.pos && op1.des <= op0.pos + l0) {
       // case 5.1
-      return makeOpMov(op1.pos - l0, l1, op0.pos);
-    } else if (op1.des <= op1.pos && op1.des <= op0.pos + l0) {
+      return [makeOpMov(op1.pos - l0, l1, op0.pos)];
+    } else if (op1.des <= op1.pos && op1.des >= op0.pos + l0) {
       // case 5.2
-      return makeOpMov(op1.pos - l0, l1, op1.des - l0);
+      return [makeOpMov(op1.pos - l0, l1, op1.des - l0)];
     } else if (op1.des >= op1.pos + l1) {
       // case 5.3
-      return makeOpMov(op1.pos - l0, l1, op1.des - l0);
+      return [makeOpMov(op1.pos - l0, l1, op1.des - l0)];
     } else if (op1.des <= op0.pos) {
       // case 5.4
-      return makeOpMov(op1.pos - l0, l1, op1.des);
+      return [makeOpMov(op1.pos - l0, l1, op1.des)];
     }
   } else {
     // other cases: idk, man. I'm confusing myself at 5AM
-    return op1;
+    return [op1];
   }
 }
 
