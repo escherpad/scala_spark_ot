@@ -315,6 +315,32 @@ function transform_ins_mov(op0, op1) {
     }
 
   } else if (pos1 >= pos0) {
+    // case 3: Mov area to the right of Ins point
+    /*
+     case 3.1:
+     //        ______
+     //   (x) |      |
+     //    |  |      |
+     //    v  v    [___]
+     // 0 1 2 3 4 5 6 7 8 9 ...
+     //    Ins      Mov
+
+     case 3.2:
+     // _____________
+     //|  (x)        |
+     //|   |         |
+     //v   v       [___]
+     // 0 1 2 3 4 5 6 7 8 9 ...
+     //    Ins      Mov
+
+     case 3.3:
+     //               ____
+     //   (x)        |    |
+     //    |         |    |
+     //    v       [___]  v
+     // 0 1 2 3 4 5 6 7 8 9 ...
+     //    Ins      Mov
+     */
     if (des <= pos0) {
       return [makeOpMov(pos1 + l0, l1, des)];
     } else if (des >= pos0 && des <= pos1 || des >= pos1 + l1) {
