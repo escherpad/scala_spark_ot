@@ -241,6 +241,90 @@ function transform_del_mov(op0, op1) {
   }
 }
 
+function transform_ins_mov(op0, op1) {
+  var v0 = op0.value;
+  var l0 = v0.length;
+  var l1 = op1.length;
+  var des = op1.des;
+  var pos0 = op0.pos;
+  var pos1 = op1.pos;
+
+  // case 1: Mov area to the left of Ins point
+  /*
+   case 1.1
+
+   //     _____
+   //    |     |  "X"
+   //    |     |   |
+   //  [___]   v   V
+   // 0 1 2 3 4 5 6 7 8 9 ...
+   //   Mov        Ins
+
+
+   case 1.2
+
+   //     _____________
+   //    |        "X"  |
+   //    |         |   |
+   //  [___]       V   v
+   // 0 1 2 3 4 5 6 7 8 9 ...
+   //   Mov        Ins
+
+
+   case 1.3
+   //  __
+   // |  |        "X"
+   // |  |         |
+   // v[___]       V
+   // 0 1 2 3 4 5 6 7 8 9 ...
+   //   Mov        Ins
+
+   */
+  if (pos1 + l1 <= pos0) {
+    //case 1
+    if (des >= pos1 + l1 && des <= pos0 || des <= pos1) {
+      // case 1.1 & 1.3
+      return [op1];
+    } else if (des >= pos0) {
+      // case 1.2
+      return [makeOpMov(pos1, l1, des + l0)];
+    }
+  } else if (pos1 <= pos0 && pos1 + l1 >= pos0) {
+    // case 2: Mov area wrapped Ins point
+    /*
+     case 2.1:
+     //
+     //  ___ "X"
+     // |   | |
+     // v  [__V__]
+     // 0 1 2 3 4 5 6 7 8 9 ...
+     //    Mov(Ins)
+
+     case 2.2
+     //
+     //      "X" ____
+     //       | |    |
+     //    [__V__]   v
+     // 0 1 2 3 4 5 6 7 8 9 ...
+     //    Mov(Ins)
+     */
+    if (des <= pos1) {
+      return [op1];
+    } else if (des >= pos1 + l1) {
+      return [makeOpMov(pos1, pos0 - pos1, des + l0), makeOpMov(pos0 + l0, l1 - pos0 + pos1, des + 10)];
+    }
+
+  } else if (pos1 >= pos0) {
+    if (des <= pos0) {
+      return [makeOpMov(pos1 + l0, l1, des)];
+    } else if (des >= pos0 && des <= pos1 || des >= pos1 + l1) {
+      return [makeOpMov(pos1 + l0, l1, des + l0)];
+    }
+  } else {
+    return [op1];
+  }
+}
+
 export function transform(op0, op1) {
   // todo: transform op1 after op0
 
@@ -250,8 +334,7 @@ export function transform(op0, op1) {
     } else if (op1.type === "ins") {
       return transform_ins_ins(op0, op1);
     } else if (op1.type === "mov") {
-      // todo: ins then mov
-      return nil;
+      return transform_ins_mov(op0, op1);
     } else {
       console.log("Transform: no such operator!!!");
     }
