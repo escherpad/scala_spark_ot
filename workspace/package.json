@@ -12,7 +12,7 @@
   "jest": {
     "verbose": true,
     "testPathIgnorePatterns": [
-      "/demo-page/"
+      "/demo-page/", "dist"
     ]
   },
   "keywords": [
