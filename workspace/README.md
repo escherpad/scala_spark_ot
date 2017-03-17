@@ -15,5 +15,5 @@ Then run `start` under demo-page, or use IntelliJ built-in integration with `npm
 This rebuilds the `./demo-page/index.js` file as you change it (and dependencies). you still need to reload the webpage manually.
 
 #### To run test
-run `npm test`. This uses `jest` and watches the folder for '.test*' and '.spec*' files. 
+run `npm test` to test once. To develop and test while developing, run `npm run test-watch`. This uses `jest --watch`, which watches the folder for '.test*' and '.spec*' files. 
 
