@@ -48,8 +48,8 @@ function transform_del_del(op0, op1) {
 }
 
 function transform_del_mov(op0, op1) {
-  var l1 = op1.length;
-  var l0 = op0.length;
+  const l1 = op1.length;
+  const l0 = op0.length;
 
   // case 1: Mov area is left to Del area
   /* Wrapped with block comment so the comment could be folded
@@ -242,12 +242,12 @@ function transform_del_mov(op0, op1) {
 }
 
 function transform_ins_mov(op0, op1) {
-  var v0 = op0.value;
-  var l0 = v0.length;
-  var l1 = op1.length;
-  var des = op1.des;
-  var pos0 = op0.pos;
-  var pos1 = op1.pos;
+  const v0 = op0.value;
+  const l0 = v0.length;
+  const l1 = op1.length;
+  const des = op1.des;
+  const pos0 = op0.pos;
+  const pos1 = op1.pos;
 
   // case 1: Mov area to the left of Ins point
   /*
