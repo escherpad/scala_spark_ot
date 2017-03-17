@@ -2,7 +2,7 @@ export function ins(s, i, v) {
   return s.slice(0, i) + v + s.slice(i);
 }
 
-export function del(s, i, l) {
+export function del(s, i, l = 1) {
   return s.slice(0, i) + s.slice(i + l);
 }
 
