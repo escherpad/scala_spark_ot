@@ -16,6 +16,10 @@ it("del-string-at-beginning", () => {
   del("01234", 0).should.be.equal("1234");
 });
 
+it("del-string-at-beginning2", () => {
+  del("01234", 0, 3).should.be.equal("34");
+});
+
 // mov test
 it("mov-char", () => {
   mov("012345", 0, 1, 6).should.be.equal("123450");
