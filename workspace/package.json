@@ -4,14 +4,15 @@
   "description": "operational transform library from @escherpad",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watch",
+    "test": "jest",
+    "test-watch": "jest --watch",
     "watch-build": "babel ./src --out-dir dist -w --source-maps",
     "build": "babel ./src --out-dir dist"
   },
   "jest": {
     "verbose": true,
     "testPathIgnorePatterns": [
-      "/demo-page/"
+      "/demo-page/", "dist"
     ]
   },
   "keywords": [

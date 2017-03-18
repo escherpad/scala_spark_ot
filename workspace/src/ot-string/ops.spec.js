@@ -1,5 +1,5 @@
 import "should";
-import {ins, del, mov} from "./string-ops";
+import {ins, del, mov} from "./ops";
 
 // ins test
 it("ins-string-at-beginning", () => {
@@ -16,6 +16,10 @@ it("del-string-at-beginning", () => {
   del("01234", 0).should.be.equal("1234");
 });
 
+it("del-string-at-beginning2", () => {
+  del("01234", 0, 3).should.be.equal("34");
+});
+
 // mov test
 it("mov-char", () => {
   mov("012345", 0, 1, 6).should.be.equal("123450");
@@ -25,4 +29,9 @@ it("mov-char", () => {
 it("mov-string", () => {
   mov("012345", 0, 2, 6).should.be.equal("234501");
   mov("012345", 1, 2, 4).should.be.equal("031245");
+});
+
+it("mov-string-backward", () => {
+  mov("0123456789", 5, 2, 1).should.be.equal("0561234789");
+
 });

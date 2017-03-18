@@ -1,7 +1,7 @@
 import "should";
-import {applyOp} from "./string-apply";
-import {ins, del, mov} from "./string-ops";
-import {makeOpIns, makeOpDel, makeOpMov} from "./utility";
+import {applyOp} from "./apply";
+import {ins, del, mov} from "./ops";
+import {Ins, Del, Mov} from "./op-creators";
 
 // test insert operation
 it("apply-insert", () => {
@@ -10,7 +10,7 @@ it("apply-insert", () => {
   let value = "x";
 
   let s_true = ins(s, pos, value);
-  let op_ins = makeOpIns(pos, value);
+  let op_ins = Ins(pos, value);
   let s_apply = applyOp(s, op_ins);
 
   s_true.should.be.equal(s_apply);
@@ -23,7 +23,7 @@ it("apply-del", () => {
   let length = 2;
 
   let s_true = del(s, pos, length);
-  let op_del = makeOpDel(pos, length);
+  let op_del = Del(pos, length);
   let s_apply = applyOp(s, op_del);
 
   s_true.should.be.equal(s_apply);
@@ -37,7 +37,7 @@ it("apply-mov", () => {
   let des = 6;
 
   let s_true = mov(s, pos, value, des);
-  let op_mov = makeOpMov(pos, value, des);
+  let op_mov = Mov(pos, value, des);
   let s_apply = applyOp(s, op_mov);
 
   s_true.should.be.equal(s_apply);
