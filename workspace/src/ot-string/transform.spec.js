@@ -1,7 +1,7 @@
 import should from "should";
 import {ins, del, mov} from "./ops";
 import {applyOp} from "./apply";
-import {Ins, Del, Mov} from "./utility";
+import {Ins, Del, Mov} from "./op-creators";
 import {transform, transfromIndex, transformCursor} from "./transform";
 
 function applyAndCompare(s, ops0, ops1) {

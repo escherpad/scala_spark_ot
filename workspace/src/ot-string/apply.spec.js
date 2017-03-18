@@ -1,7 +1,7 @@
 import "should";
 import {applyOp} from "./apply";
 import {ins, del, mov} from "./ops";
-import {Ins, Del, Mov} from "./utility";
+import {Ins, Del, Mov} from "./op-creators";
 
 // test insert operation
 it("apply-insert", () => {

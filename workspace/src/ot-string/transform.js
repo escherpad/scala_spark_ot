@@ -1,4 +1,4 @@
-import {Del, Ins, Mov} from "./utility";
+import {Del, Ins, Mov} from "./op-creators";
 export function transformIndex(ind, op) {
   if (op.type === "ins") {
     return (op.pos <= ind ? op.value.length + ind : ind);
