@@ -1,3 +1,3 @@
 export function OpSet() {
-  return [].concat(arguments);
+  return Array.prototype.concat.apply([], Array.from(arguments));
 }
