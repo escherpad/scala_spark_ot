@@ -1,4 +1,4 @@
-import {makeOpDel, makeOpIns, makeOpMov} from "./utility";
+import {Del, Ins, Mov} from "./utility";
 export function transformIndex(ind, op) {
   if (op.type === "ins") {
     return (op.pos <= ind ? op.value.length + ind : ind);
@@ -20,31 +20,31 @@ export function transformCursor(cursor, op) {
 function transform_ins_del(op0, op1) {
   return op1.pos + op1.length <= op0.pos ? [op1] :
     op1.pos <= op0.pos ? [
-        makeOpDel(op1.pos, op0.value.pos - op1.pos),
-        makeOpDel(op0.pos + op0.value.length - (op0.pos - op1.pos), op1.length - (op0.pos - op1.pos))
+        Del(op1.pos, op0.value.pos - op1.pos),
+        Del(op0.pos + op0.value.length - (op0.pos - op1.pos), op1.length - (op0.pos - op1.pos))
       ] :
-      [makeOpDel(op1.pos + op0.value.length, op1.length)];
+      [Del(op1.pos + op0.value.length, op1.length)];
 }
 
 function transform_ins_ins(op0, op1) {
   return op1.pos + op1.length <= op0.pos ? [op1] :
     op1.pos <= op0.pos ? [
-        makeOpIns(op1.pos, op0.value.pos - op1.pos),
-        makeOpIns(op0.pos + op0.value.length - (op0.pos - op1.pos), op1.length - (op0.pos - op1.pos))
+        Ins(op1.pos, op0.value.pos - op1.pos),
+        Ins(op0.pos + op0.value.length - (op0.pos - op1.pos), op1.length - (op0.pos - op1.pos))
       ] :
-      [makeOpIns(op1.pos + op0.value.length, op1.length)];
+      [Ins(op1.pos + op0.value.length, op1.length)];
 }
 
 function transform_del_ins(op0, op1) {
   return op1.pos <= op0.pos ? [op1] :
-    op1.pos <= op0.pos + op0.length ? [makeOpIns(op0.pos, op1.value)] :
-      [makeOpIns(op1.pos - op0.length, op1.value)];
+    op1.pos <= op0.pos + op0.length ? [Ins(op0.pos, op1.value)] :
+      [Ins(op1.pos - op0.length, op1.value)];
 }
 
 function transform_del_del(op0, op1) {
   return op1.pos <= op0.pos ? [op1] :
-    op1.pos <= op0.pos + op0.length ? [makeOpDel(op0.pos, op1.value)] :
-      [makeOpDel(op1.pos - op0.length, op1.value)];
+    op1.pos <= op0.pos + op0.length ? [Del(op0.pos, op1.value)] :
+      [Del(op1.pos - op0.length, op1.value)];
 }
 
 function transform_del_mov(op0, op1) {
@@ -90,10 +90,10 @@ function transform_del_mov(op0, op1) {
   if (op1.pos + l1 <= op0.pos) {
     if (op1.des >= op0.pos && op1.des <= op0.pos + l0) {
       // case 1.1
-      return [makeOpMov(op1.pos, l1, op0.pos)];
+      return [Mov(op1.pos, l1, op0.pos)];
     } else if (op1.des >= op0.pos + l0) {
       // case 1.3
-      return [makeOpMov(op1.pos, l1, op1.des - l0)];
+      return [Mov(op1.pos, l1, op1.des - l0)];
     } else {
       // case 1.2 & 1.4
       return [op1];
@@ -128,14 +128,14 @@ function transform_del_mov(op0, op1) {
      */
     if (op1.des >= op1.pos + l1 && op1.des <= op0.pos + l0) {
       // case 2.1
-      return [makeOpMov(0, 0, 0)];
+      return [Mov(0, 0, 0)];
       // as same as it doesn't move
     } else if (op1.des >= op0.pos + l0) {
       // case 2.2
-      return [makeOpMov(op1.pos, op0.pos - op1.pos, op1.des - l0)];
+      return [Mov(op1.pos, op0.pos - op1.pos, op1.des - l0)];
     } else {
       // case 2.3
-      return [makeOpMov(op1.pos, op0.pos - op1.pos, op1.des)];
+      return [Mov(op1.pos, op0.pos - op1.pos, op1.des)];
     }
   } else if (op1.pos >= op0.pos && op1.pos + op1.length <= op0.pos + op0.length) {
     // case 3: Fully Overlap between Mov area and Del area
@@ -148,7 +148,7 @@ function transform_del_mov(op0, op1) {
      //          op1  op0(del)
      */
     // same as it doesn't move (the move area is deleted before move)
-    return [makeOpMov(0, 0, 0)];
+    return [Mov(0, 0, 0)];
   } else if (op1.pos >= op0.pos && op1.pos <= op0.pos + l0 && op1.pos + l1 >= op0.pos + l0) {
     // case 4: Partial Overlap (Right to op0 area)
     /*
@@ -178,14 +178,14 @@ function transform_del_mov(op0, op1) {
      */
     if (op1.des >= op0.pos && op1.des <= op1.pos) {
       // case 4.1
-      return [makeOpMov(0, 0, 0)];
+      return [Mov(0, 0, 0)];
       // same as it doesn't move
     } else if (op1.des <= op0.pos) {
       // case 4.2
-      return [makeOpMov(op0.pos, op1.pos + l1 - op0.pos - l0, op1.des)];
+      return [Mov(op0.pos, op1.pos + l1 - op0.pos - l0, op1.des)];
     } else {
       // case 4.3
-      return [makeOpMov(op0.pos, op1.pos + l1 - op0.pos - l0, op1.des - l0)];
+      return [Mov(op0.pos, op1.pos + l1 - op0.pos - l0, op1.des - l0)];
     }
   } else if (op1.pos >= op0.pos + l0) {
     // case 5: Mov area is right to Del area
@@ -224,16 +224,16 @@ function transform_del_mov(op0, op1) {
      */
     if (op1.des >= op0.pos && op1.des <= op0.pos + l0) {
       // case 5.1
-      return [makeOpMov(op1.pos - l0, l1, op0.pos)];
+      return [Mov(op1.pos - l0, l1, op0.pos)];
     } else if (op1.des <= op1.pos && op1.des >= op0.pos + l0) {
       // case 5.2
-      return [makeOpMov(op1.pos - l0, l1, op1.des - l0)];
+      return [Mov(op1.pos - l0, l1, op1.des - l0)];
     } else if (op1.des >= op1.pos + l1) {
       // case 5.3
-      return [makeOpMov(op1.pos - l0, l1, op1.des - l0)];
+      return [Mov(op1.pos - l0, l1, op1.des - l0)];
     } else if (op1.des <= op0.pos) {
       // case 5.4
-      return [makeOpMov(op1.pos - l0, l1, op1.des)];
+      return [Mov(op1.pos - l0, l1, op1.des)];
     }
   } else {
     // other cases: idk, man. I'm confusing myself at 5AM
@@ -287,7 +287,7 @@ function transform_ins_mov(op0, op1) {
       return [op1];
     } else if (des >= pos0) {
       // case 1.2
-      return [makeOpMov(pos1, l1, des + l0)];
+      return [Mov(pos1, l1, des + l0)];
     }
   } else if (pos1 <= pos0 && pos1 + l1 >= pos0) {
     // case 2: Mov area wrapped Ins point
@@ -311,7 +311,7 @@ function transform_ins_mov(op0, op1) {
     if (des <= pos1) {
       return [op1];
     } else if (des >= pos1 + l1) {
-      return [makeOpMov(pos1, pos0 - pos1, des + l0), makeOpMov(pos0 + l0, l1 - pos0 + pos1, des + 10)];
+      return [Mov(pos1, pos0 - pos1, des + l0), Mov(pos0 + l0, l1 - pos0 + pos1, des + 10)];
     }
 
   } else if (pos1 >= pos0) {
@@ -342,9 +342,9 @@ function transform_ins_mov(op0, op1) {
      //    Ins      Mov
      */
     if (des <= pos0) {
-      return [makeOpMov(pos1 + l0, l1, des)];
+      return [Mov(pos1 + l0, l1, des)];
     } else if (des >= pos0 && des <= pos1 || des >= pos1 + l1) {
-      return [makeOpMov(pos1 + l0, l1, des + l0)];
+      return [Mov(pos1 + l0, l1, des + l0)];
     }
   } else {
     return [op1];

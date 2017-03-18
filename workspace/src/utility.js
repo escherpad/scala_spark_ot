@@ -1,4 +1,4 @@
-export function makeOpIns(pos, value) {
+export function Ins(pos, value) {
   return {
     type: "ins",
     pos: pos,
@@ -6,7 +6,7 @@ export function makeOpIns(pos, value) {
   };
 };
 
-export function makeOpDel(pos, length) {
+export function Del(pos, length) {
   return {
     type: "del",
     pos: pos,
@@ -14,7 +14,7 @@ export function makeOpDel(pos, length) {
   };
 }
 
-export function makeOpMov(pos, length, des) {
+export function Mov(pos, length, des) {
   return {
     type: "mov",
     pos: pos,
