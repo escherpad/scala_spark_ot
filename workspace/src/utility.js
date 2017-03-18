@@ -4,7 +4,7 @@ export function Ins(pos, value) {
     pos: pos,
     value: value
   };
-};
+}
 
 export function Del(pos, length) {
   return {
@@ -21,4 +21,4 @@ export function Mov(pos, length, des) {
     length: length,
     des: des
   };
-};
+}
