@@ -30,3 +30,8 @@ it("mov-string", () => {
   mov("012345", 0, 2, 6).should.be.equal("234501");
   mov("012345", 1, 2, 4).should.be.equal("031245");
 });
+
+it("mov-string-backward", () => {
+  mov("0123456789", 5, 2, 1).should.be.equal("0561234789");
+
+});
