@@ -1,8 +1,8 @@
 import should from "should";
-import {ins, del, mov} from "./string-ops";
-import {applyOp} from "./string-apply";
+import {ins, del, mov} from "./ops";
+import {applyOp} from "./apply";
 import {Ins, Del, Mov} from "./utility";
-import {transform, transfromIndex, transformCursor} from "./string-transform";
+import {transform, transfromIndex, transformCursor} from "./transform";
 
 function applyAndCompare(s, ops0, ops1) {
   var s_true = s;

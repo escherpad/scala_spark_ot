@@ -1,4 +1,4 @@
-import {ins, del, mov} from "./string-ops";
+import {ins, del, mov} from "./ops";
 export function applyOp(s, op) {
   if (op.type === "ins") {
     return ins(s, op.pos, op.value);

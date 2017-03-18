@@ -1,6 +1,6 @@
 import "should";
-import {applyOp} from "./string-apply";
-import {ins, del, mov} from "./string-ops";
+import {applyOp} from "./apply";
+import {ins, del, mov} from "./ops";
 import {Ins, Del, Mov} from "./utility";
 
 // test insert operation

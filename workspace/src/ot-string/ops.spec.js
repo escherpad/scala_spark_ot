@@ -1,5 +1,5 @@
 import "should";
-import {ins, del, mov} from "./string-ops";
+import {ins, del, mov} from "./ops";
 
 // ins test
 it("ins-string-at-beginning", () => {
