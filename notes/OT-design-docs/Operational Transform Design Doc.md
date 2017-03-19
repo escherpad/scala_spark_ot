@@ -256,7 +256,7 @@ example
 ### del(Delete)
 format
 
-`[index, {d: length}]`
+`[index, {$del: length}]`
 
 example
 
