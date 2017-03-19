@@ -23,8 +23,8 @@ be done for either indivudual user or the entire collaborative edit stack.
 The client side usage of the OT class follows this pattern:
 
 1. editor generates an updated new version of the `{source, selection, update}` pair.
-2. the update object is sent to the `store$`, an `OT reducer` applys the update, and 
-generates an collection of `undos`. 
+2. the update object is sent to the `store$`, an `OT reducer` applys the update, and
+generates an collection of `undos`.
 3. The update gets put into a update stack `edits` (in a generator)
 ```javascript
     const updates = [
@@ -49,7 +49,7 @@ generates an collection of `undos`.
 > You don't want to keep all of the synced edits forever. Therefore edits are cleared as soon
 as they are confirmed by the server.
 
-5. At some point, the upload process 
+5. At some point, the upload process
 decides to send the current edit stack to the server. At this time, the upload process
     - inserts a new edit stack to the editStack hence closes the edits being sent over
 
@@ -71,7 +71,7 @@ let _selection, undos = applyStringCursor(selection, edits:<edit>[])
 
 - each selection has an `anchor` and a `head`. Head can be before anchor in a "backward" selection.
 - cursor handling (transform) is handled completely separately from the operational transforms.
-- the operations do not have to retain the directional information of the selection. For example, 
+- the operations do not have to retain the directional information of the selection. For example,
     a `delete` operation does not have to know whether the anchor is at the begining of the deleted
     range, or the end.
 
@@ -82,10 +82,19 @@ let _selection, undos = applyStringCursor(selection, edits:<edit>[])
 let object = <plain, serializable object>;
 let _object, undos = apply(object, edits:<edit>[])
 ```
-
-
-
+## Operations Format
+|        type       | methods                               | op format                                                                                                                                                                                                                                                     | op example                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+|:-----------------:|---------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| char              | set                                   | "new value"                                                                                                                                                                                                                                                   | {$set:"new value"}                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| number            | set(new_value) add(+1/-1)             | <number> {$inc:<number>}                                                                                                                                                                                                                                      | {$set:100} {$add: -1} note: also include date                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| string            | $set ins del mov                      | {$set:string_value<string>} [ind<num>,value<string>] [ind<num>, length<num>] [ind<num>, {length<num>,des<num>}]                                                                                                                                               | effectively an array of char only array<char>                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| array             | $set ins del mov update(index, [op…]) | {$set: array_value<array>} [ind<num>, insert_item_value<string>] [ind<num>, {$del: number_of_items<num>:1}] [ind<num>, {$mov:<num> , $to<num>}] [ind<num>, {$ops:<ops...>}] [compoundKey<dot.separated.key.integer-string>, {$ops}]                           | [ind<num>, […new_array]] → need to insert(add) new_array as item. [ind<num>, {$set: […new_array]}] → need to add new_array as item. [ind<num>, {…new_obj}] → need to add new_obj as item [ind<num>, {$del: 1}] → delet item#ind [ind<num>, {$mov: 1, $to: 4}] → move item#1 to #4 [ind<num>, {$set: “new_string”} → set item#ind to “new_string” [ind<num>, number] → insert item#ind a number [ind<num>, {$ops: […operations]}]                                                 |
+| associative-array | $set ins del changeKey update         | {$set: associativeArray_value<array>} [key<num/string>, insert_item_value<string>] [key<num/string>, {$del:number_of_items<num>:1}] [key<num/string>, {$key<num/string>:}] [key<num/string>, {$ops<ops...>:}] [compoundKey<dot.separated.key-string>, {$ops}] | {key<num/string>, […newAssociateArray]} [key<num/string>, {$set: […new_array]}] → need to add new_array as item. [key<num/string>, {…new_obj}] → need to add new_obj as item [key<num/string>, {$del: 1}] → delet item#ind. Only one item at a time [key<num/string>, {$mov: 1, $to: 4}] → move item#1 to #4 [key<num/string>, {$set: “new_string”} → set item#ind to “new_string” [key<num/string>, number] → insert item#ind a number [key<num/string>, {$ops: […operations]}] |
 ## Collaborative String
+
+### set
+
+
 
 ### Insert
 
@@ -103,7 +112,7 @@ let _object, undos = apply(object, edits:<edit>[])
 
 or alternatively `[index, {d:length, m: new index}]`
 
-this way, edits that follows would be able to maintain the reference to 
+this way, edits that follows would be able to maintain the reference to
 the text when a very large piece of text is moved that is being actively
 by another client.
 
@@ -118,15 +127,15 @@ simple insertion and deletion
 
 
 ### Operation Transforms
-        
+
 #### insert over insert
 ```javascript
-[op1.ind <= op0.ind ? 
+[op1.ind <= op0.ind ?
     op1.ind :
-    op1.ind + op0.value.length, 
+    op1.ind + op0.value.length,
 op1.value]
 ```
-        
+
 #### insert over delete
 
 ##### strategy
@@ -138,35 +147,35 @@ insertion happened inside the deleted segment.
 [op1.ind < op0.ind ?
     op1.ind :
     Math.max(op1.ind - op0.length, op0.ind)
-    // or: 
+    // or:
     op1.ind < op0.ind + op0.length ?
         op0.ind :
-        op1.ind - op0.length, 
+        op1.ind - op0.length,
 op1.value]
 ```
-        
+
 #### delete over insert
 
 ```javascript
 [op1.ind + op1.length < op0.ind ?
     op1.ind :
     Math.max(op1.ind - op0.length, op0.ind)
-    // or: 
+    // or:
     op1.ind < op0.ind + op0.length ?
         op0.ind :
-        op1.ind - op0.length, 
+        op1.ind - op0.length,
 op1.value]
 ```
-        
+
 #### delete over delete
 
 ```javascript
-[op1.ind < op0.ind ? 
+[op1.ind < op0.ind ?
     op1.ind :
     Math.max(op1.ind - op0.length, op0.ind),
 op1.length]
 ```
-    
+
 ##### cursor handling
 
 if `delete` needs to be transformed to after `delete`
@@ -191,7 +200,7 @@ simple insertion and deletion
 
 ```javascript
 [
-    0, {i}, 
+    0, {i},
     "source", [
 ```
 
@@ -199,7 +208,7 @@ object insertion and deletion
 
 ```javascript
 [
-    0, [0, "Hey! ", 3, {d:1}], 
+    0, [0, "Hey! ", 3, {d:1}],
     "source", [
 ```
 
@@ -223,27 +232,27 @@ object insertion and deletion
 ### example
 ```javascript
 [
-    ["source","0123"], [0, "Hey! ", 3, {d:1}], 
+    ["source","0123"], [0, "Hey! ", 3, {d:1}],
     "source", [
 ```
 
-with arrays, in each operation the array_index is handled by the operational 
+with arrays, in each operation the array_index is handled by the operational
 transform. In objects, there is no implicit ordering of the keys and the key
-generation is handled by the client. As a result, there is always a risk for 
+generation is handled by the client. As a result, there is always a risk for
 two clients to push the same key, therefore resulting in a conflict.
 
-Therefore in object insert, there should be a case where key generation is 
-automatically transformed by the OT algorithm. All subsequent operations 
-involving this new key will and should be updated to use a conflict-resolved 
+Therefore in object insert, there should be a case where key generation is
+automatically transformed by the OT algorithm. All subsequent operations
+involving this new key will and should be updated to use a conflict-resolved
 key.
 
-OT-JSON0 format[^ot-JSON-wiki]'s edit format has too much redundancy. For 
-example, to delete an element, `edit = {p: index, ld: item_as_object}`. 
+OT-JSON0 format[^ot-JSON-wiki]'s edit format has too much redundancy. For
+example, to delete an element, `edit = {p: index, ld: item_as_object}`.
 The actual item itself has to be included in the edit. This is a bit cumbersom,
 and for extremely long string items, the comparison can take a while.
 
 
-[^ot-JSON-wiki]: [https://github.com/ottypes/json0](https://github.com/ottypes/json0) 
+[^ot-JSON-wiki]: [https://github.com/ottypes/json0](https://github.com/ottypes/json0)
 
 
 ## OT Type: `ordered array with associative keys`
@@ -253,7 +262,7 @@ and for extremely long string items, the comparison can take a while.
 
 ## Heuristics for handling carets:
 
-Centralized algo: 
+Centralized algo:
 
 ## Communicating Over the Network
 
@@ -263,10 +272,10 @@ Example of an edit session:
 
 1. client A inputs "a brow fo", client B inputs "John => is typing this"
 2. A's edit reaches the server first. Base version is 0, client B's edits are moved *after* through A's edits.
-3. As A's edits are accepted by the server, it is published to all clients. Client B receives this edit, and 
+3. As A's edits are accepted by the server, it is published to all clients. Client B receives this edit, and
 transforms it's own edits behind. This transform should be identical to that happens on the server.
 4. Now B's edits are also accepted by the server. server again publishes these edits to all clients. B receives
-these edits and removes the edits that have been sent back from it's active edit stack. 
+these edits and removes the edits that have been sent back from it's active edit stack.
 
 On the client: each object has
 - transform stack
@@ -275,20 +284,20 @@ On the client: each object has
 
 ### Typical work flow:
 
-#### action: 
+#### action:
 ```
     { type: "UPDATE_POST", id: <post_id>, edits: [20, " muhaha", 20, {d: 3}] }
 ```
 #### object update edit stack:
 ```
-    { 
-        type: "UPDATE_POST", 
-        id: <post_id>, 
+    {
+        type: "UPDATE_POST",
+        id: <post_id>,
         edits: [{
             p: <key> or [key0, key1...],
-            na, li, ld, lm, oi, od, oc, si, sd, sc, 
+            na, li, ld, lm, oi, od, oc, si, sd, sc,
                 or [na, ns, li, ld, lm, lc, ...]
         }]
     }
 ```
-#### server saving 
+#### server saving

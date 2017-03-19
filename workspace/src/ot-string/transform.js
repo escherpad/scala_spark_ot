@@ -20,9 +20,10 @@ export function transformCursor(cursor, op) {
 }
 
 function transform_ins_del(op0, op1) {
+  console.log(op0.value.pos);
   return op1.pos + op1.length <= op0.pos ? OpSet(op1) :
     op1.pos <= op0.pos ? OpSet(
-        Del(op1.pos, op0.value.pos - op1.pos),
+        Del(op1.pos, op0.pos - op1.pos),
         Del(op0.pos + op0.value.length - (op0.pos - op1.pos), op1.length - (op0.pos - op1.pos))
       ) :
       OpSet(Del(op1.pos + op0.value.length, op1.length));
