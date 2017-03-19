@@ -85,32 +85,86 @@ let _object, undos = apply(object, edits:<edit>[])
 ## Operations Format
 |        type       | methods                               | op format                                                                                                                                                                                                                                                     | op example                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 |:-----------------:|---------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| char              | set                                   | "new value"                                                                                                                                                                                                                                                   | {$set:"new value"}                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
-| number            | set(new_value) add(+1/-1)             | <number> {$inc:<number>}                                                                                                                                                                                                                                      | {$set:100} {$add: -1} note: also include date                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| char              | set                                   | {$set:"new value"}                                                                                                                                                                                                                                            | {$set:"new value"}                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| number            | set(new_value) add(+1/-1)             | {$set:<number>} {$inc:<number>}                                                                                                                                                                                                                               | {$set:100} {$add: -1} note: also include date                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | string            | $set ins del mov                      | {$set:string_value<string>} [ind<num>,value<string>] [ind<num>, length<num>] [ind<num>, {length<num>,des<num>}]                                                                                                                                               | effectively an array of char only array<char>                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | array             | $set ins del mov update(index, [op…]) | {$set: array_value<array>} [ind<num>, insert_item_value<string>] [ind<num>, {$del: number_of_items<num>:1}] [ind<num>, {$mov:<num> , $to<num>}] [ind<num>, {$ops:<ops...>}] [compoundKey<dot.separated.key.integer-string>, {$ops}]                           | [ind<num>, […new_array]] → need to insert(add) new_array as item. [ind<num>, {$set: […new_array]}] → need to add new_array as item. [ind<num>, {…new_obj}] → need to add new_obj as item [ind<num>, {$del: 1}] → delet item#ind [ind<num>, {$mov: 1, $to: 4}] → move item#1 to #4 [ind<num>, {$set: “new_string”} → set item#ind to “new_string” [ind<num>, number] → insert item#ind a number [ind<num>, {$ops: […operations]}]                                                 |
 | associative-array | $set ins del changeKey update         | {$set: associativeArray_value<array>} [key<num/string>, insert_item_value<string>] [key<num/string>, {$del:number_of_items<num>:1}] [key<num/string>, {$key<num/string>:}] [key<num/string>, {$ops<ops...>:}] [compoundKey<dot.separated.key-string>, {$ops}] | {key<num/string>, […newAssociateArray]} [key<num/string>, {$set: […new_array]}] → need to add new_array as item. [key<num/string>, {…new_obj}] → need to add new_obj as item [key<num/string>, {$del: 1}] → delet item#ind. Only one item at a time [key<num/string>, {$mov: 1, $to: 4}] → move item#1 to #4 [key<num/string>, {$set: “new_string”} → set item#ind to “new_string” [key<num/string>, number] → insert item#ind a number [key<num/string>, {$ops: […operations]}] |
-## Collaborative String
 
-### set
+## OT char
+### set (Set a new char)
+format
 
+`"a new char"`
 
+example
 
-### Insert
+`{$set:"A"}`
 
-`[index, insertValue]`
+## OT number
+### set (Set a new number)
+format
 
-### Delete
+`{$set:value<number>}`
 
-`[index, {d: length}]`
+example
 
-### Replace
+`{$set:100}`
+### add (Addition/Subtraction)
+'add' could be negative or positive
+
+not: Also include 'date' type
+
+format
+
+`{$inc:<number>}`
+
+example
+
+`{$add: -1}`
+
+## OT String
+
+### set (Set a new string)
+format
+
+`{$set: string_value<string>}`
+
+example
+
+`{$set: "Hello World"}`
+
+### ins(Insert)
+format
+
+`[index<num>, insertValue<string>]`
+
+example
+
+`[5,"Hello"]`
+
+### del(Delete)
+format
+
+`[index<num>, length<num>]`
+
+example
+
+`[5,2]`
+
+### Replace 
 
 `[index, {d: length}, index, insertValue]`
 
-### Move
+### mov(Move)
 
-or alternatively `[index, {d:length, m: new index}]`
+format 
+
+`[ind<num>, {length<num>, des<num>}]`
+
+example
+
+`[2, {3, 9}]`
 
 this way, edits that follows would be able to maintain the reference to
 the text when a very large piece of text is moved that is being actively
@@ -121,10 +175,8 @@ by another client.
 simple insertion and deletion
 
 ```javascript
-[0, "Hey! ", 4, {d:1}] // => "" -> "Hey!"
+[0, "Hey! ", 4, 1] // => "" -> "Hey!"
 ```
-
-
 
 ### Operation Transforms
 
@@ -181,36 +233,111 @@ op1.length]
 if `delete` needs to be transformed to after `delete`
 
 
-## OT Type: `array`
+## OT Ordered Array
+### set (Set as a new array)
+format
 
-### Insert
+`{$set: array_value<array>}`
+
+example
+
+in previous level:
+`[ind<num>, {$set: […new_array]}]`
+
+### ins(Insert)
+format
+
 `[index, insertValue]`
 
-### Delete
+example
+
+`[1, {…new_obj}] `
+
+### del(Delete)
+format
+
 `[index, {d: length}]`
 
-### Move
-`[index, {m: new index}]`
+example
+
+`[3, {$del: 2}]`
+
+### mov(Move)
+format
+
+`[ind<num>, {$mov: <num>, $to<num>}]`
+
+example
+
+`[1, {$mov: 1, $to: 4}]`
+
+### update
+format
+
+`[ind<num>, {$ops:<ops…>}]`
+
+ops may contains compound key
+
+`[compoundKey<dot.separated.key.integer-string>, {$ops}]`
+
+example
+
+`[2, {$ops: […operations]}]`
 
 ### Replace
 `[index, {d: length}, index, insertValue]`
 
 ### example
-simple insertion and deletion
+insertion and deletion
 
 ```javascript
-[
-    0, {i},
-    "source", [
+[0, {name: a, value:b}, 3, 1]
 ```
 
-object insertion and deletion
+## OT Associative Array
+### set (Set as a new array)
+format
+`{$set: associativeArray_value<array>}`
 
-```javascript
-[
-    0, [0, "Hey! ", 3, {d:1}],
-    "source", [
-```
+example
+
+in previous level:
+`["0a1", {$set: ["0a11":obj1, ...]}]`
+
+### ins(Insert)
+format
+`[key<num|string>, insert_item_value<string>]`
+
+example
+`[1, {…new_obj}] `
+
+### del(Delete one object at a time)
+format
+`[key<num|string>, {$del:number_of_items<num>:1}]`
+
+example
+`["0a2", {$del: 1}]`
+
+### changeKey
+format
+`[key<num|string>, {$key:<num|string>}]`
+
+example
+`["0a1", {$key: "0a2"}]`
+
+### update
+format
+
+`[key<num|string>, {$ops:<ops…>}]`
+
+ops may contains compound key
+
+`[compoundKey<dot.separated.key.integer-string>, {$ops}]`
+
+example
+
+`["0a2", {$ops: […operations]}]`
+
 
 ## OT Type: `object`
 
