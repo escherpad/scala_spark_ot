@@ -23,8 +23,8 @@ be done for either indivudual user or the entire collaborative edit stack.
 The client side usage of the OT class follows this pattern:
 
 1. editor generates an updated new version of the `{source, selection, update}` pair.
-2. the update object is sent to the `store$`, an `OT reducer` applys the update, and 
-generates an collection of `undos`. 
+2. the update object is sent to the `store$`, an `OT reducer` applys the update, and
+generates an collection of `undos`.
 3. The update gets put into a update stack `edits` (in a generator)
 ```javascript
     const updates = [
@@ -49,7 +49,7 @@ generates an collection of `undos`.
 > You don't want to keep all of the synced edits forever. Therefore edits are cleared as soon
 as they are confirmed by the server.
 
-5. At some point, the upload process 
+5. At some point, the upload process
 decides to send the current edit stack to the server. At this time, the upload process
     - inserts a new edit stack to the editStack hence closes the edits being sent over
 
@@ -71,7 +71,7 @@ let _selection, undos = applyStringCursor(selection, edits:<edit>[])
 
 - each selection has an `anchor` and a `head`. Head can be before anchor in a "backward" selection.
 - cursor handling (transform) is handled completely separately from the operational transforms.
-- the operations do not have to retain the directional information of the selection. For example, 
+- the operations do not have to retain the directional information of the selection. For example,
     a `delete` operation does not have to know whether the anchor is at the begining of the deleted
     range, or the end.
 
@@ -82,28 +82,91 @@ let _selection, undos = applyStringCursor(selection, edits:<edit>[])
 let object = <plain, serializable object>;
 let _object, undos = apply(object, edits:<edit>[])
 ```
+## Operations Format
+|        type       | methods                                                     | op format                                                                                                                                                                                                                                                           | op example                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+|:-----------------:|-------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| char              | set                                                         | {$s:"new value"}                                                                                                                                                                                                                                                    | {$s:"new value"}                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| number            | set(new_value) add(+1/-1)                                   | {$s:\<number>} <br/> {$a:\<number>}                                                                                                                                                                                                                                 | {$s:100} <br/> {$add: -1} note: also include date                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| string            | $s <br/> ins <br/> del <br/>mov                             | {$s:string_value\<string>} <br/> [ind\<num>,value\<string>] <br/> [ind\<num>, length\<num>] <br/> [ind\<num>, {length\<num>,des\<num>}]                                                                                                                             | effectively an array of char only array<char>                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| array             | $s <br/> ins <br/> del <br/> mov <br/> update(index, [op…]) | {$s: array_value\<array>} <br/> [ind\<num>, insert_item_value\<string>] <br/> [ind\<num>, {$del: number_of_items\<num>:1}] <br/> [ind\<num>, {$mov:\<num> , $to\<num>}] <br/> [ind\<num>, {$ops:<ops...>}] <br/> [compoundKey\<dot.separated.key.integer-string>, {$ops}]  | [ind\<num>, […new_array]] → need to insert(add) new_array as item. <br/> [ind\<num>, {$s: […new_array]}] → need to add new_array as item. <br/> [ind\<num>, {…new_obj}] → need to add new_obj as item <br/> [ind\<num>, {$del: 1}] → delet item#ind <br/> [ind\<num>, {$mov: 1, $to: 4}] → move item#1 to #4 <br/> [ind\<num>, {$s: “new_string”} → set item#ind to “new_string” <br/> [ind\<num>, number] → insert item#ind a number <br/> [ind\<num>, {$ops: […operations]}]                                                 |
+| associative-array | $s <br/> ins <br/> del <br/> changeKey <br/> update                                 | {$s: associativeArray_value\<array>} <br/> [key\<num/string>, insert_item_value\<string>] <br/> [key\<num/string>, {$del:number_of_items<num>:1}] <br/> [key\<num/string>, {$k\<num/string>:}] <br/> [key\<num/string>, {$ops<ops...>:}] <br/> [compoundKey\<dot.separated.key-string>, {$ops}]         | {key\<num/string>, […newAssociateArray]} <br/> [key\<num/string>, {$s: […new_array]}] → need to add new_array as item. <br/> [key\<num/string>, {…new_obj}] → need to add new_obj as item <br/> [key\<num/string>, {$del: 1}] → delete item#ind. Only one item at a time <br/> [key\<num/string>, {$mov: 1, $to: 4}] → move item#1 to #4 <br/> [key\<num/string>, {$s: “new_string”} → set item#ind to “new_string” <br/> [key\<num/string>, number] → insert item#ind a number <br/> [key\<num/string>, {$ops: […operations]}] |
 
+## OT char
+### set (Set a new char)
+format
 
+`"a new char"`
 
-## Collaborative String
+example
 
-### Insert
+`{$s:"A"}`
 
-`[index, insertValue]`
+## OT number
+### set (Set a new number)
+format
 
-### Delete
+`{$s:value<number>}`
 
-`[index, {d: length}]`
+example
 
-### Replace
+`{$s:100}`
+### add (Addition/Subtraction)
+'add' could be negative or positive
+
+not: Also include 'date' type
+
+format
+
+`{$a:<number>}`
+
+example
+
+`{$a: -1}`
+
+## OT String
+
+### set (Set a new string)
+format
+
+`{$s: string_value<string>}`
+
+example
+
+`{$s: "Hello World"}`
+
+### ins(Insert)
+format
+
+`[index<num>, insertValue<string>]`
+
+example
+
+`[5,"Hello"]`
+
+### del(Delete)
+format
+
+`[index<num>, length<num>]`
+
+example
+
+`[5,2]`
+
+### Replace 
 
 `[index, {d: length}, index, insertValue]`
 
-### Move
+### mov(Move)
 
-or alternatively `[index, {d:length, m: new index}]`
+format 
 
-this way, edits that follows would be able to maintain the reference to 
+`[ind<num>, {length<num>, des<num>}]`
+
+example
+
+`[2, {3, 9}]`
+
+this way, edits that follows would be able to maintain the reference to
 the text when a very large piece of text is moved that is being actively
 by another client.
 
@@ -112,21 +175,19 @@ by another client.
 simple insertion and deletion
 
 ```javascript
-[0, "Hey! ", 4, {d:1}] // => "" -> "Hey!"
+[0, "Hey! ", 4, 1] // => "" -> "Hey!"
 ```
-
-
 
 ### Operation Transforms
-        
+
 #### insert over insert
 ```javascript
-[op1.ind <= op0.ind ? 
+[op1.ind <= op0.ind ?
     op1.ind :
-    op1.ind + op0.value.length, 
+    op1.ind + op0.value.length,
 op1.value]
 ```
-        
+
 #### insert over delete
 
 ##### strategy
@@ -138,70 +199,145 @@ insertion happened inside the deleted segment.
 [op1.ind < op0.ind ?
     op1.ind :
     Math.max(op1.ind - op0.length, op0.ind)
-    // or: 
+    // or:
     op1.ind < op0.ind + op0.length ?
         op0.ind :
-        op1.ind - op0.length, 
+        op1.ind - op0.length,
 op1.value]
 ```
-        
+
 #### delete over insert
 
 ```javascript
 [op1.ind + op1.length < op0.ind ?
     op1.ind :
     Math.max(op1.ind - op0.length, op0.ind)
-    // or: 
+    // or:
     op1.ind < op0.ind + op0.length ?
         op0.ind :
-        op1.ind - op0.length, 
+        op1.ind - op0.length,
 op1.value]
 ```
-        
+
 #### delete over delete
 
 ```javascript
-[op1.ind < op0.ind ? 
+[op1.ind < op0.ind ?
     op1.ind :
     Math.max(op1.ind - op0.length, op0.ind),
 op1.length]
 ```
-    
+
 ##### cursor handling
 
 if `delete` needs to be transformed to after `delete`
 
 
-## OT Type: `array`
+## OT Ordered Array
+### set (Set as a new array)
+format
 
-### Insert
+`{$s: array_value<array>}`
+
+example
+
+in previous level:
+`[ind<num>, {$s: […new_array]}]`
+
+### ins(Insert)
+format
+
 `[index, insertValue]`
 
-### Delete
-`[index, {d: length}]`
+example
 
-### Move
-`[index, {m: new index}]`
+`[1, {…new_obj}] `
+
+### del(Delete)
+format
+
+`[index, {$d: length}]`
+
+example
+
+`[3, {$d: 2}]`
+
+### mov(Move)
+format
+
+`[ind<num>, {$mov: <num>, $to<num>}]`
+
+example
+
+`[1, {$mov: 1, $to: 4}]`
+
+### update
+format
+
+`[ind<num>, {$ops:<ops…>}]`
+
+ops may contains compound key
+
+`[compoundKey<dot.separated.key.integer-string>, {$ops}]`
+
+example
+
+`[2, {$ops: […operations]}]`
 
 ### Replace
 `[index, {d: length}, index, insertValue]`
 
 ### example
-simple insertion and deletion
+insertion and deletion
 
 ```javascript
-[
-    0, {i}, 
-    "source", [
+[0, {name: a, value:b}, 3, 1]
 ```
 
-object insertion and deletion
+## OT Associative Array
+### set (Set as a new array)
+format
+`{$s: associativeArray_value<array>}`
 
-```javascript
-[
-    0, [0, "Hey! ", 3, {d:1}], 
-    "source", [
-```
+example
+
+in previous level:
+`["0a1", {$s: ["0a11":obj1, ...]}]`
+
+### ins(Insert)
+format
+`[key<num|string>, insert_item_value<string>]`
+
+example
+`[1, {…new_obj}] `
+
+### del(Delete one object at a time)
+format
+`[key<num|string>, {$d:number_of_items<num>:1}]`
+
+example
+`["0a2", {$d: 1}]`
+
+### changeKey
+format
+`[key<num|string>, {$k:<num|string>}]`
+
+example
+`["0a1", {$k: "0a2"}]`
+
+### update
+format
+
+`[key<num|string>, {$o:<ops…>}]`
+
+ops may contains compound key
+
+`[compoundKey<dot.separated.key.integer-string>, {$o}]`
+
+example
+
+`["0a2", {$o: […operations]}]`
+
 
 ## OT Type: `object`
 
@@ -223,27 +359,27 @@ object insertion and deletion
 ### example
 ```javascript
 [
-    ["source","0123"], [0, "Hey! ", 3, {d:1}], 
+    ["source","0123"], [0, "Hey! ", 3, {d:1}],
     "source", [
 ```
 
-with arrays, in each operation the array_index is handled by the operational 
+with arrays, in each operation the array_index is handled by the operational
 transform. In objects, there is no implicit ordering of the keys and the key
-generation is handled by the client. As a result, there is always a risk for 
+generation is handled by the client. As a result, there is always a risk for
 two clients to push the same key, therefore resulting in a conflict.
 
-Therefore in object insert, there should be a case where key generation is 
-automatically transformed by the OT algorithm. All subsequent operations 
-involving this new key will and should be updated to use a conflict-resolved 
+Therefore in object insert, there should be a case where key generation is
+automatically transformed by the OT algorithm. All subsequent operations
+involving this new key will and should be updated to use a conflict-resolved
 key.
 
-OT-JSON0 format[^ot-JSON-wiki]'s edit format has too much redundancy. For 
-example, to delete an element, `edit = {p: index, ld: item_as_object}`. 
+OT-JSON0 format[^ot-JSON-wiki]'s edit format has too much redundancy. For
+example, to delete an element, `edit = {p: index, ld: item_as_object}`.
 The actual item itself has to be included in the edit. This is a bit cumbersom,
 and for extremely long string items, the comparison can take a while.
 
 
-[^ot-JSON-wiki]: [https://github.com/ottypes/json0](https://github.com/ottypes/json0) 
+[^ot-JSON-wiki]: [https://github.com/ottypes/json0](https://github.com/ottypes/json0)
 
 
 ## OT Type: `ordered array with associative keys`
@@ -253,7 +389,7 @@ and for extremely long string items, the comparison can take a while.
 
 ## Heuristics for handling carets:
 
-Centralized algo: 
+Centralized algo:
 
 ## Communicating Over the Network
 
@@ -263,10 +399,10 @@ Example of an edit session:
 
 1. client A inputs "a brow fo", client B inputs "John => is typing this"
 2. A's edit reaches the server first. Base version is 0, client B's edits are moved *after* through A's edits.
-3. As A's edits are accepted by the server, it is published to all clients. Client B receives this edit, and 
+3. As A's edits are accepted by the server, it is published to all clients. Client B receives this edit, and
 transforms it's own edits behind. This transform should be identical to that happens on the server.
 4. Now B's edits are also accepted by the server. server again publishes these edits to all clients. B receives
-these edits and removes the edits that have been sent back from it's active edit stack. 
+these edits and removes the edits that have been sent back from it's active edit stack.
 
 On the client: each object has
 - transform stack
@@ -275,20 +411,20 @@ On the client: each object has
 
 ### Typical work flow:
 
-#### action: 
+#### action:
 ```
     { type: "UPDATE_POST", id: <post_id>, edits: [20, " muhaha", 20, {d: 3}] }
 ```
 #### object update edit stack:
 ```
-    { 
-        type: "UPDATE_POST", 
-        id: <post_id>, 
+    {
+        type: "UPDATE_POST",
+        id: <post_id>,
         edits: [{
             p: <key> or [key0, key1...],
-            na, li, ld, lm, oi, od, oc, si, sd, sc, 
+            na, li, ld, lm, oi, od, oc, si, sd, sc,
                 or [na, ns, li, ld, lm, lc, ...]
         }]
     }
 ```
-#### server saving 
+#### server saving
